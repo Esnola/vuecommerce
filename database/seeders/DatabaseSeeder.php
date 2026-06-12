@@ -25,6 +25,7 @@
       ]);
       $this->call([
         CountrySeeder::class,
+        ProductSeeder::class,
       ]);
     }
   }

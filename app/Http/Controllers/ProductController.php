@@ -8,59 +8,59 @@ use App\Models\Product;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+       $products = Product::with('categories')
+         ->with('creator')
+         ->with('updater')
+         ->with('deleter')
+       ->paginate(20);
+       return view('products.index', ['products' => $products,
+         'title' => __('Product List')]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+       return view('products.create', ['title' => __('Create Product')]);
     }
+  
+  
+  public function store(StoreProductRequest $request)
+  {
+    $product = Product::create($request->validated());
+    
+    return view('products.show', [
+      'product' => $product,
+      'title' => __('Product Detail')
+    ])->with('success', 'New Product created successfully.');
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreProductRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Product $product)
     {
-        //
+      
+      return view('products.show', [
+        'product' => $product,
+        'title' => __('Product Detail')
+      ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Product $product)
     {
-        //
+       return view('products.create', [
+         'product' => $product,
+         'title' => 'Edit Product'
+       ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+      $product->update($request->validated());
+      return redirect()->route('products.show', $product)->with('success', 'Product updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Product $product)
     {
-        //
+      $product->delete();
+      return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
 }
