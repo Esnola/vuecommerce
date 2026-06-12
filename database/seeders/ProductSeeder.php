@@ -5,6 +5,7 @@
   use App\Models\Product;
   use Illuminate\Database\Seeder;
   use Illuminate\Support\Facades\Http;
+  use Illuminate\Support\Str;
   
   class ProductSeeder extends Seeder
   {
@@ -19,10 +20,19 @@
         ->json('products');
       
       foreach ($products as $product) {
-        Product::updateOrCreate(
+        $existingProduct = Product::withTrashed()
+          ->where('title', $product['title'])
+          ->first();
+
+        Product::withTrashed()->updateOrCreate(
+          ['title' => $product['title']],
           [
-            'title' => $product['title'],
+            'deleted_at' => null,
             'description' => $product['description'] ?? null,
+            'slug' => $this->uniqueSlug(
+              $product['title'],
+              $existingProduct?->id
+            ),
             'category' => $product['category'],
             'price' => $product['price'],
             'discount_percentage' =>
@@ -51,5 +61,28 @@
           ]
         );
       }
+    }
+
+    private function uniqueSlug(
+      string $title,
+      ?int $productId = null
+    ): string
+    {
+      $baseSlug = Str::slug($title);
+      $slug = $baseSlug;
+      $suffix = 2;
+
+      while (Product::withTrashed()
+        ->where('slug', $slug)
+        ->when(
+          $productId,
+          fn ($query) => $query->whereKeyNot($productId)
+        )
+        ->exists()) {
+        $slug = $baseSlug . '-' . $suffix;
+        $suffix++;
+      }
+
+      return $slug;
     }
   }

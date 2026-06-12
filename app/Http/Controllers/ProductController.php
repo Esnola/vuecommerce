@@ -2,12 +2,9 @@
   
   namespace App\Http\Controllers;
   
-  use App\Http\Requests\StoreProductRequest;
-  use App\Http\Requests\UpdateProductRequest;
-  use App\Models\Product;
-  
   class ProductController extends Controller
   {
+    /*
     public function index()
     {
       $products = Product::with('creator')
@@ -61,4 +58,5 @@
       $product->delete();
       return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
+    */
   }

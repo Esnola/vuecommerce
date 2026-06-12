@@ -1,16 +1,16 @@
-<!-- Include this script tag or install `@tailwindplus/elements` via npm: -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script> -->
-<nav class="relative bg-gray-800">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+<nav class="relative bg-gray-800 dark:bg-white/30">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
     <div class="flex h-16 items-center justify-between">
       <div class="flex items-center">
         <div class="shrink-0">
-          <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company"
-               class="h-8 w-auto"/>
+          <img src="{{asset('images/gitlogo.png')}}" alt="Your Company"
+               class="w-14 rounded-full h-auto"/>
         </div>
         <div class="hidden sm:ml-6 sm:block">
           <div class="flex space-x-4">
             <x-partials.main-links/>
+            <livewire:language-toggle/>
+            <x-partials.darkmode-switch/>
           </div>
         </div>
       </div>
@@ -26,7 +26,6 @@
                     stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
-
           <!-- Profile dropdown -->
           <el-dropdown class="relative ml-3">
             <button class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
@@ -69,14 +68,7 @@
 
   <el-disclosure id="mobile-menu" hidden class="block sm:hidden">
     <div class="space-y-1 px-2 pt-2 pb-3">
-      <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-white/5 hover:text-white" -->
-      <a href="#" class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white">Dashboard</a>
-      <a href="#"
-         class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Team</a>
-      <a href="#"
-         class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Projects</a>
-      <a href="#"
-         class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Calendar</a>
+      <x-partials.main-links/>
     </div>
     <div class="border-t border-white/10 pt-4 pb-3">
       <div class="flex items-center px-5">

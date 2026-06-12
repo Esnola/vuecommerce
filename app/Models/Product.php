@@ -8,15 +8,16 @@
   use Illuminate\Database\Eloquent\Model;
   use Illuminate\Database\Eloquent\Relations\BelongsTo;
   use Illuminate\Database\Eloquent\Relations\HasMany;
+  use Illuminate\Database\Eloquent\SoftDeletes;
   
   class Product extends Model
   {
     /** @use HasFactory<ProductFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     
     protected $guarded = [];
     protected $casts = [
-      'status' => ProductStatusEnum::class,
+      'availability_status' => ProductStatusEnum::class,
       'price' => 'decimal:2',
       'discount_percentage' => 'decimal:2',
       'rating' => 'decimal:2',
@@ -32,10 +33,6 @@
       return $this->hasMany(Category::class, 'category_id');
     }
     
-    public function productImages()
-    {
-      return $this->hasMany(ProductImage::class, 'product_id');
-    }
     
     public function creator(): BelongsTo
     {
@@ -52,4 +49,13 @@
       return $this->belongsTo(User::class, 'deleted_by');
     }
     
+    public function formatPrice(): string
+    {
+      return number_format($this->price, 2, ',', '.') . ' €';
+    }
+    
+    public function formatDiscount(): string
+    {
+      return number_format($this->discount_percentage, 2, ',', '.') . ' %';
+    }
   }

@@ -13,7 +13,7 @@
     {
       Schema::create('products', function (Blueprint $table) {
         $table->id();
-        //  $table->unsignedBigInteger('external_id')->unique();
+        $table->string('slug')->unique();
         $table->string('title');
         $table->text('description')->nullable();
         $table->string('category')->index();
