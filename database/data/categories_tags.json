@@ -1,0 +1,272 @@
+{
+  "categories": [
+    {
+      "category": "beauty",
+      "tags": [
+        "beauty",
+        "mascara",
+        "eyeshadow",
+        "face powder",
+        "lipstick",
+        "nail polish"
+      ]
+    },
+    {
+      "category": "fragrances",
+      "tags": [
+        "fragrances",
+        "perfumes"
+      ]
+    },
+    {
+      "category": "furniture",
+      "tags": [
+        "furniture",
+        "beds",
+        "sofas",
+        "bedside tables",
+        "office chairs",
+        "bathroom"
+      ]
+    },
+    {
+      "category": "groceries",
+      "tags": [
+        "fruits",
+        "meat",
+        "pet supplies",
+        "cat food",
+        "cooking essentials",
+        "vegetables",
+        "dog food",
+        "dairy",
+        "seafood",
+        "condiments",
+        "desserts",
+        "beverages",
+        "coffee",
+        "health supplements",
+        "grains",
+        "household essentials"
+      ]
+    },
+    {
+      "category": "home-decoration",
+      "tags": [
+        "home decor",
+        "swing",
+        "photo frame",
+        "artificial plants",
+        "plant accessories",
+        "lighting"
+      ]
+    },
+    {
+      "category": "kitchen-accessories",
+      "tags": [
+        "kitchen tools",
+        "utensils",
+        "drinkware",
+        "cups",
+        "kitchen appliances",
+        "blenders",
+        "cookware",
+        "woks",
+        "cutting boards",
+        "juicers",
+        "slicers",
+        "cooktops",
+        "strainers",
+        "glasses",
+        "graters",
+        "ice cube trays",
+        "cutlery",
+        "storage",
+        "microwaves",
+        "organization",
+        "pans",
+        "dinnerware",
+        "plates",
+        "tongs",
+        "pots",
+        "turners",
+        "serveware",
+        "trays",
+        "baking",
+        "peelers"
+      ]
+    },
+    {
+      "category": "laptops",
+      "tags": [
+        "laptops",
+        "apple"
+      ]
+    },
+    {
+      "category": "mens-shirts",
+      "tags": [
+        "clothing",
+        "men's shirts",
+        "men's t-shirts"
+      ]
+    },
+    {
+      "category": "mens-shoes",
+      "tags": [
+        "footwear",
+        "athletic shoes",
+        "sports cleats",
+        "casual shoes"
+      ]
+    },
+    {
+      "category": "mens-watches",
+      "tags": [
+        "watches",
+        "leather watches",
+        "luxury watches"
+      ]
+    },
+    {
+      "category": "mobile-accessories",
+      "tags": [
+        "electronics",
+        "smart speakers",
+        "wireless earphones",
+        "over-ear headphones",
+        "wireless chargers",
+        "chargers",
+        "power banks",
+        "smartwatches",
+        "phone accessories",
+        "camera accessories",
+        "selfie accessories"
+      ]
+    },
+    {
+      "category": "motorcycle",
+      "tags": [
+        "motorcycles",
+        "sportbikes",
+        "scooters"
+      ]
+    },
+    {
+      "category": "skin-care",
+      "tags": [
+        "personal care",
+        "hand soap",
+        "body wash",
+        "body lotion"
+      ]
+    },
+    {
+      "category": "smartphones",
+      "tags": [
+        "smartphones",
+        "apple",
+        "oppo",
+        "realme",
+        "samsung galaxy",
+        "vivo"
+      ]
+    },
+    {
+      "category": "sports-accessories",
+      "tags": [
+        "sports equipment",
+        "american football",
+        "baseball",
+        "basketball",
+        "cricket",
+        "badminton",
+        "football",
+        "golf",
+        "tennis",
+        "volleyball"
+      ]
+    },
+    {
+      "category": "sunglasses",
+      "tags": [
+        "eyewear",
+        "sunglasses",
+        "party glasses"
+      ]
+    },
+    {
+      "category": "tablets",
+      "tags": [
+        "electronics",
+        "tablets"
+      ]
+    },
+    {
+      "category": "tops",
+      "tags": [
+        "clothing",
+        "dresses",
+        "girls' dresses"
+      ]
+    },
+    {
+      "category": "vehicle",
+      "tags": [
+        "sedans",
+        "vehicles",
+        "sports cars",
+        "hatchbacks",
+        "compact cars",
+        "suvs",
+        "minivans"
+      ]
+    },
+    {
+      "category": "womens-bags",
+      "tags": [
+        "fashion accessories",
+        "handbags",
+        "leather bags",
+        "designer bags",
+        "backpacks"
+      ]
+    },
+    {
+      "category": "womens-dresses",
+      "tags": [
+        "clothing",
+        "gowns",
+        "corsets",
+        "skirts",
+        "dresses",
+        "suits"
+      ]
+    },
+    {
+      "category": "womens-jewellery",
+      "tags": [
+        "fashion accessories",
+        "earrings"
+      ]
+    },
+    {
+      "category": "womens-shoes",
+      "tags": [
+        "footwear",
+        "slippers",
+        "heel shoes",
+        "women's shoes",
+        "casual shoes"
+      ]
+    },
+    {
+      "category": "womens-watches",
+      "tags": [
+        "watches",
+        "luxury watches",
+        "women's watches"
+      ]
+    }
+  ]
+}

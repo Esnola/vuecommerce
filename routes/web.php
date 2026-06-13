@@ -16,6 +16,8 @@
       return view('index');
     });*/
   Route::livewire('/', 'pages::index')->name('pages.index');
-  Route::livewire('/products', 'pages::products.index')->name('products.index');
-  Route::livewire('/products/{slug}', 'pages::products.show')->name('products.show');
+  Route::prefix('products')->group(function(){
+    Route::livewire('/', 'pages::products.index')->name('products.index');
+    Route::livewire('/{slug}', 'pages::products.show')->name('products.show');
+  });
   Route::livewire('/contact', 'pages::contact')->name('pages.contact');

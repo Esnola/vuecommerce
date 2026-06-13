@@ -12,14 +12,9 @@
     {
       Schema::create('categories', function (Blueprint $table) {
         $table->id();
-        $table->string('name');
-        $table->string('slug');
-        $table->boolean('active');
-        $table->foreignId('parent_id')->nullable()->constrained('categories');
-        $table->foreignId('created_by')->nullable()->constrained('users');
-        $table->foreignId('updated_by')->nullable()->constrained('users');
-        $table->timestamp('deleted_at')->nullable();
-        $table->foreignId('deleted_by')->nullable()->constrained('users');
+        $table->string('name')->unique();
+        $table->string('slug')->unique();
+        $table->boolean('active')->default(true);
         $table->timestamps();
       });
     }

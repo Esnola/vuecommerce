@@ -31,7 +31,7 @@
     <div class="-mx-px grid grid-cols-2 border-l border-gray-200 sm:mx-0 md:grid-cols-3 lg:grid-cols-4">
       @forelse($this->products() as $product)
         @php
-          $thumbnail = $product->thumbnail;
+          $thumbnail = $product->mainImage();
         @endphp
 
         <div class="group relative border-r border-b border-gray-200 p-4 sm:p-6">

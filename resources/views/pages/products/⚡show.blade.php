@@ -10,7 +10,7 @@
     {
       $this->product = Product::query()
         ->where('slug', $slug)
-        ->with(['creator', 'updater', 'deleter'])
+        ->with(['creator', 'updater', 'deleter', 'images', 'categories', 'tags'])
         ->firstOrFail();
     }
 
@@ -58,16 +58,40 @@
           <dt class="font-medium text-gray-900">Considerations</dt>
           <dd class="mt-2 text-sm text-gray-500">Made from natural materials. Grain and color vary with each item.</dd>
         </div>
+      <div class="border-t border-gray-200 pt-4">
+        <dt class="font-medium text-gray-900">{{ __('Categories') }}</dt>
+        @foreach ($product->categories as $cat)
+          <dd class="mt-2 text-sm text-gray-500"> {{ $cat->name}} </dd>
+        @endforeach
+      </div>
+        <div class="border-t border-gray-200 pt-4">
+          <dt class="font-medium text-gray-900">{{ __('Tags') }}</dt>
+          @foreach ($product->tags as $tag)
+            <dd class="mt-2 text-sm text-gray-500"> {{ $tag->name}} </dd>
+          @endforeach
+        </div>
       </dl>
     </div>
-    <div class="grid grid-cols-2 grid-rows-2 gap-4 sm:gap-6 lg:gap-8">
-      @if($product->thumbnail)
-        <img src="{{$product->thumbnail}}" alt="{{$product->title}}"
+    <div class="flex flex-col gap-4 sm:gap-6 lg:gap-8">
+    <img id="mainImage" src="{{$product->mainImage()}}" alt="{{$product->title}}"
              class="aspect-square rounded-lg bg-gray-100 object-cover shadow-xl"/>
-      @endif
-      @foreach($product->images as $image)
-        <img src="{{ $image }}" alt="{{$product->title}}" class="rounded-lg bg-gray-100"/>
-      @endforeach
+      <div class="flex items-center jusitfy-center gap-2">
+        @foreach ($product->images->skip(1) as $image)
+          <img data-thumbs src="{{ $image->url }}" alt="{{$product->title}}"
+               class="rounded-lg bg-gray-100 object-cover aspect-square w-24 h-auto"/>
+        @endforeach
+      </div>
     </div>
   </div>
 </div>
+{{--
+<script>
+mainImage = document.getElementById('mainImage');
+otherImages = document.querySelectorAll('[data-thumbs]');
+otherImages.forEach(image => {
+    image.addEventListener('mouseover', () => {
+        mainImage.src = image.src;
+    })
+})
+</script>
+--}}

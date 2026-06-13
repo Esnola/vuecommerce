@@ -1,61 +1,79 @@
 <?php
-  
-  namespace App\Models;
-  
-  use App\Enums\ProductStatusEnum;
-  use Database\Factories\ProductFactory;
-  use Illuminate\Database\Eloquent\Factories\HasFactory;
-  use Illuminate\Database\Eloquent\Model;
-  use Illuminate\Database\Eloquent\Relations\BelongsTo;
-  use Illuminate\Database\Eloquent\Relations\HasMany;
-  use Illuminate\Database\Eloquent\SoftDeletes;
-  
-  class Product extends Model
-  {
+
+namespace App\Models;
+
+use App\Enums\ProductStatusEnum;
+use Database\Factories\ProductFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Product extends Model
+{
     /** @use HasFactory<ProductFactory> */
     use HasFactory, SoftDeletes;
-    
+
     protected $guarded = [];
+
     protected $casts = [
-      'availability_status' => ProductStatusEnum::class,
-      'price' => 'decimal:2',
-      'discount_percentage' => 'decimal:2',
-      'rating' => 'decimal:2',
-      'images' => 'array',
-      'tags' => 'array',
-      'dimensions' => 'array',
-      'reviews' => 'array',
-      'meta' => 'array',
+        'availability_status' => ProductStatusEnum::class,
+        'price' => 'decimal:2',
+        'discount_percentage' => 'decimal:2',
+        'rating' => 'decimal:2',
+        'dimensions' => 'array',
+        'reviews' => 'array',
+        'meta' => 'array',
     ];
-    
-    public function categories(): HasMany
+
+    public function categories(): BelongsToMany
     {
-      return $this->hasMany(Category::class, 'category_id');
+        return $this->belongsToMany(Category::class, 'product_categories');
     }
-    
-    
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'product_tags');
+    }
+
+    public function images(): BelongsToMany
+    {
+        return $this->belongsToMany(Image::class, 'product_images')
+            ->withPivot('position')
+            ->withTimestamps()
+            ->orderByPivot('position');
+    }
+
+    public function mainImage(): string
+    {
+        return $this->images()
+            ->where('position', 1)
+            ->value('url') ?? '';
+    }
+
     public function creator(): BelongsTo
     {
-      return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
-    
+
     public function updater(): BelongsTo
     {
-      return $this->belongsTo(User::class, 'updated_by');
+        return $this->belongsTo(User::class, 'updated_by');
     }
-    
+
     public function deleter(): BelongsTo
     {
-      return $this->belongsTo(User::class, 'deleted_by');
+        return $this->belongsTo(User::class, 'deleted_by');
     }
-    
+
     public function formatPrice(): string
     {
-      return number_format($this->price, 2, ',', '.') . ' €';
+        return number_format($this->price, 2, ',', '.').' €';
     }
-    
+
     public function formatDiscount(): string
     {
-      return number_format($this->discount_percentage, 2, ',', '.') . ' %';
+        return number_format($this->discount_percentage, 2, ',', '.').' %';
     }
-  }
+}
