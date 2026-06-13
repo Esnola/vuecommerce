@@ -15,14 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $admin = User::query()->updateOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'JuanJota',
+                'password' => 'password',
+                'email_verified_at' => now(),
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'JuanJota',
-            'email' => 'test@example.com',
-            'email_verified_at' => now(),
-            'is_admin' => true,
-        ]);
+        $admin->forceFill(['is_admin' => true])->save();
+
         $this->call([
             CountrySeeder::class,
             ProductSeeder::class,

@@ -1,11 +1,11 @@
 <?php
-
+  
   use App\Models\Product;
   use Livewire\Component;
-
+  
   new class extends Component {
     public Product $product;
-
+    
     public function mount(string $slug): void
     {
       $this->product = Product::query()
@@ -13,7 +13,7 @@
         ->with(['creator', 'updater', 'deleter', 'images', 'categories', 'tags'])
         ->firstOrFail();
     }
-
+    
     public function render(): mixed
     {
       return view('pages.products.⚡show');
@@ -58,12 +58,12 @@
           <dt class="font-medium text-gray-900">Considerations</dt>
           <dd class="mt-2 text-sm text-gray-500">Made from natural materials. Grain and color vary with each item.</dd>
         </div>
-      <div class="border-t border-gray-200 pt-4">
-        <dt class="font-medium text-gray-900">{{ __('Categories') }}</dt>
-        @foreach ($product->categories as $cat)
-          <dd class="mt-2 text-sm text-gray-500"> {{ $cat->name}} </dd>
-        @endforeach
-      </div>
+        <div class="border-t border-gray-200 pt-4">
+          <dt class="font-medium text-gray-900">{{ __('Categories') }}</dt>
+          @foreach ($product->categories as $cat)
+            <dd class="mt-2 text-sm text-gray-500"> {{ $cat->name}} </dd>
+          @endforeach
+        </div>
         <div class="border-t border-gray-200 pt-4">
           <dt class="font-medium text-gray-900">{{ __('Tags') }}</dt>
           @foreach ($product->tags as $tag)
@@ -73,8 +73,8 @@
       </dl>
     </div>
     <div class="flex flex-col gap-4 sm:gap-6 lg:gap-8">
-    <img id="mainImage" src="{{$product->mainImage()}}" alt="{{$product->title}}"
-             class="aspect-square rounded-lg bg-gray-100 object-cover shadow-xl"/>
+      <img id="mainImage" src="{{$product->mainImage()}}" alt="{{$product->title}}"
+           class="aspect-square rounded-lg bg-gray-100 object-cover shadow-xl"/>
       <div class="flex items-center jusitfy-center gap-2">
         @foreach ($product->images->skip(1) as $image)
           <img data-thumbs src="{{ $image->url }}" alt="{{$product->title}}"
@@ -84,14 +84,6 @@
     </div>
   </div>
 </div>
-{{--
-<script>
-mainImage = document.getElementById('mainImage');
-otherImages = document.querySelectorAll('[data-thumbs]');
-otherImages.forEach(image => {
-    image.addEventListener('mouseover', () => {
-        mainImage.src = image.src;
-    })
-})
-</script>
---}}
+
+
+@vite('resources/js/show-images.js')

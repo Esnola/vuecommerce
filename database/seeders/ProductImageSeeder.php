@@ -25,32 +25,7 @@ class ProductImageSeeder extends Seeder
                 ->whereIn('sku', array_column($productsData, 'sku'))
                 ->pluck('id', 'sku');
 
-            $urls = collect($productsData)
-                ->flatMap(fn (array $product) => [
-                    $product['thumbnail'] ?? null,
-                    ...($product['images'] ?? []),
-                ])
-                ->filter()
-                ->unique()
-                ->values();
-
             $now = now();
-
-            foreach ($urls->chunk(500) as $chunk) {
-                DB::table('images')->upsert(
-                    $chunk->map(fn (string $url) => [
-                        'url' => $url,
-                        'created_at' => $now,
-                        'updated_at' => $now,
-                    ])->all(),
-                    ['url'],
-                    ['updated_at']
-                );
-            }
-
-            $images = DB::table('images')
-                ->whereIn('url', $urls)
-                ->pluck('id', 'url');
 
             $productIds = [];
             $productImages = [];
@@ -65,23 +40,15 @@ class ProductImageSeeder extends Seeder
                 }
 
                 $productIds[] = $productId;
-                $orderedUrls = [
+                $orderedUrls = collect([
                     $productData['thumbnail'] ?? null,
                     ...($productData['images'] ?? []),
-                ];
+                ])->filter()->unique()->values();
 
-                foreach (array_values(array_filter($orderedUrls)) as $index => $url) {
-                    $imageId = $images->get($url);
-
-                    if ($imageId === null) {
-                        throw new RuntimeException(
-                            "Image [{$url}] could not be seeded."
-                        );
-                    }
-
+                foreach ($orderedUrls as $index => $url) {
                     $productImages[] = [
                         'product_id' => $productId,
-                        'image_id' => $imageId,
+                        'url' => $url,
                         'position' => $index + 1,
                         'created_at' => $now,
                         'updated_at' => $now,

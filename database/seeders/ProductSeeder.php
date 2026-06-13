@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ProductStatusEnum;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
@@ -41,7 +42,8 @@ class ProductSeeder extends Seeder
                     'dimensions' => $product['dimensions'] ?? null,
                     'warranty_information' => $product['warrantyInformation'] ?? null,
                     'shipping_information' => $product['shippingInformation'] ?? null,
-                    'availability_status' => $product['availabilityStatus'] ?? null,
+                    'availability_status' => $product['availabilityStatus']
+                        ?? ProductStatusEnum::IN_STOCK->value,
                     'reviews' => $product['reviews'] ?? [],
                     'return_policy' => $product['returnPolicy'] ?? null,
                     'on_offer' => rand(0, 1),

@@ -3,7 +3,6 @@
     {
       "category": "beauty",
       "tags": [
-        "beauty",
         "mascara",
         "eyeshadow",
         "face powder",
@@ -14,14 +13,12 @@
     {
       "category": "fragrances",
       "tags": [
-        "fragrances",
         "perfumes"
       ]
     },
     {
       "category": "furniture",
       "tags": [
-        "furniture",
         "beds",
         "sofas",
         "bedside tables",
@@ -99,7 +96,6 @@
     {
       "category": "laptops",
       "tags": [
-        "laptops",
         "apple"
       ]
     },
@@ -107,7 +103,6 @@
       "category": "mens-shirts",
       "tags": [
         "clothing",
-        "men's shirts",
         "men's t-shirts"
       ]
     },
@@ -164,7 +159,6 @@
     {
       "category": "smartphones",
       "tags": [
-        "smartphones",
         "apple",
         "oppo",
         "realme",
@@ -191,15 +185,13 @@
       "category": "sunglasses",
       "tags": [
         "eyewear",
-        "sunglasses",
         "party glasses"
       ]
     },
     {
       "category": "tablets",
       "tags": [
-        "electronics",
-        "tablets"
+        "electronics"
       ]
     },
     {
@@ -256,7 +248,6 @@
         "footwear",
         "slippers",
         "heel shoes",
-        "women's shoes",
         "casual shoes"
       ]
     },
@@ -264,8 +255,7 @@
       "category": "womens-watches",
       "tags": [
         "watches",
-        "luxury watches",
-        "women's watches"
+        "luxury watches"
       ]
     }
   ]
