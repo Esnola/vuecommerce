@@ -10,7 +10,7 @@
     {
       $this->product = Product::query()
         ->where('slug', $slug)
-        ->with(['creator', 'updater', 'deleter', 'images', 'categories', 'tags'])
+        ->with(['creator', 'updater', 'deleter', 'images', 'categories', 'tags', 'reviews.user'])
         ->firstOrFail();
     }
     
@@ -89,5 +89,10 @@
     </div>
   </div>
 
+  <section id="comments" class="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+    <div class="border-t border-gray-200 pt-10 dark:border-white/10">
+      <x-comments :product="$product"/>
+    </div>
+  </section>
   @vite('resources/js/show-images.js')
 </div>

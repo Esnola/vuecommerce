@@ -35,7 +35,6 @@ class ProductSeeder extends Seeder
                     ),
                     'price' => $product['price'],
                     'discount_percentage' => $product['discountPercentage'] ?? 0,
-                    'rating' => $product['rating'] ?? 0,
                     'stock' => $product['stock'] ?? 0,
                     'brand' => $product['brand'] ?? null,
                     'weight' => $product['weight'] ?? null,
@@ -43,8 +42,7 @@ class ProductSeeder extends Seeder
                     'warranty_information' => $product['warrantyInformation'] ?? null,
                     'shipping_information' => $product['shippingInformation'] ?? null,
                     'availability_status' => $product['availabilityStatus']
-                        ?? ProductStatusEnum::IN_STOCK->value,
-                    'reviews' => $product['reviews'] ?? [],
+                      ?? ProductStatusEnum::IN_STOCK->value,
                     'return_policy' => $product['returnPolicy'] ?? null,
                     'on_offer' => rand(0, 1),
                     'minimum_order_quantity' => $product['minimumOrderQuantity'] ?? 1,

@@ -28,10 +28,25 @@
   ]
 ])
 
+@php
+  if (auth()->user()?->is_admin) {
+    $links[] = [
+      'name' => 'Orders',
+      'href' => route('orders.index'),
+      'active' => request()->routeIs('orders.*'),
+    ];
+  }
+@endphp
+
 <div class="flex flex-col sm:flex-row gap-6 ">
   @foreach ($links as $link)
-    <a href="{{ $link['href'] }}"
-       class="{{ $link['active']  ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' }} rounded-md  px-3 py-2 text-sm font-medium"
+    <a href="{{ $link['href'] }}" {{$link['active'] ? 'aria-current="page"' : '' }}
+            @class([
+              'text-gray-400 hover:text-gray-300 px-2 py-1 rounded-md text-sm/6 transition-colors duration-300',
+              'bg-gray-600 text-white' => $link['active'],
+              'hover:bg-gray-600 hover:text-gray-200'
+                  => !$link['active'],
+          ])
     >
       {{ __($link['name']) }}
     </a>

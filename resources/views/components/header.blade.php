@@ -1,16 +1,17 @@
 <nav class="relative bg-gray-800 shadow-white/10 shadow-lg">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
     <div class="flex h-16 items-center justify-between">
-      <div class="flex items-center">
-        <div class="shrink-0">
-          <img src="{{asset('images/gitlogo.png')}}" alt="Your Company"
-               class="w-14 rounded-full h-auto"/>
-        </div>
-        <div class="hidden sm:ml-6 sm:block">
-          <div class="flex space-x-4">
+      <div class="flex items-center justify-between w-full ">
+        <img src="{{asset('images/gitlogo.png')}}" alt="Your Company"
+             class="w-14 rounded-full h-auto shrink-0"/>
+        <div class="hidden sm:ml-6 sm:flex w-full justify-between items-center
+        ">
+          <div class="flex  justify-between items-center pl-8 w-full ">
             <x-partials.main-links/>
-            <livewire:language-toggle/>
-            <x-partials.darkmode-switch/>
+            <div class="flex items-center gap-x-4">
+              <livewire:language-toggle/>
+              <x-partials.darkmode-switch/>
+            </div>
           </div>
         </div>
       </div>

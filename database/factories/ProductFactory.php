@@ -25,6 +25,11 @@ class ProductFactory extends Factory
             'sku' => fake()->unique()->bothify('SKU-########'),
             'description' => fake()->realText(2000),
             'price' => fake()->randomFloat(2, 2, 5),
+            'dimensions' => [
+                'width' => fake()->randomFloat(2, 5, 50),
+                'height' => fake()->randomFloat(2, 5, 50),
+                'depth' => fake()->randomFloat(2, 5, 50),
+            ],
             'created_by' => null,
             'updated_by' => null,
         ];

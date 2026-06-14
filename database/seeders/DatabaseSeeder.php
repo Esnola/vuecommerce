@@ -18,7 +18,9 @@ class DatabaseSeeder extends Seeder
         $admin = User::query()->updateOrCreate(
             ['email' => 'test@example.com'],
             [
-                'name' => 'JuanJota',
+                'first_name' => 'JuanJota',
+                'last_name' => 'JotaJuan',
+                'email' => 'test@example.com',
                 'password' => 'password',
                 'email_verified_at' => now(),
             ]
@@ -29,10 +31,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CountrySeeder::class,
             ProductSeeder::class,
+            ReviewSeeder::class,
             CategorySeeder::class,
             TagSeeder::class,
             ProductRelationsSeeder::class,
             ProductImageSeeder::class,
+            OrderSeeder::class,
+            OrderItemSeeder::class,
         ]);
     }
 }

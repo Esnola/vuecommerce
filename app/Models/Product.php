@@ -22,9 +22,7 @@ class Product extends Model
         'availability_status' => ProductStatusEnum::class,
         'price' => 'decimal:2',
         'discount_percentage' => 'decimal:2',
-        'rating' => 'decimal:2',
         'dimensions' => 'array',
-        'reviews' => 'array',
         'meta' => 'array',
     ];
 
@@ -42,6 +40,17 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class)
             ->orderBy('position');
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class)
+            ->latest();
+    }
+
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
     }
 
     public function mainImage(): string
