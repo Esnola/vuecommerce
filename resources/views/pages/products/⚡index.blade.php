@@ -24,33 +24,31 @@
   };
 ?>
 
-<div class="bg-white">
+<div class="bg-white dark:bg-gray-900">
   <div class="mx-auto max-w-7xl overflow-hidden sm:px-6 lg:px-8">
     <h2 class="sr-only">{{$title}}</h2>
 
-    <div class="-mx-px grid grid-cols-2 border-l border-gray-200 sm:mx-0 md:grid-cols-3 lg:grid-cols-4">
+    <div class="-mx-px grid grid-cols-2 border-l border-gray-300 dark:border-gray-200/30 sm:mx-0 md:grid-cols-3 lg:grid-cols-4">
       @forelse($this->products() as $product)
         @php
           $thumbnail = $product->mainImage();
         @endphp
 
-        <div class="group relative border-r border-b border-gray-200 p-4 sm:p-6">
+        <div class="group relative border-r border-b border-gray-300 dark:border-gray-200/30 p-4 sm:p-6">
           @if($thumbnail)
             <img src="{{ $thumbnail }}" alt="{{ $product->title }}"
-                 class="aspect-square rounded-lg bg-gray-200 object-cover group-hover:opacity-75"/>
+                 class="aspect-square rounded-lg bg-gray-200 object-cover opacity-75 group-hover:opacity-100"/>
           @else
             <div class="aspect-square rounded-lg bg-gray-100"></div>
           @endif
 
           <div class="pt-10 pb-4 text-center">
-            <h3 class="text-sm font-medium text-gray-900">
-              <a href="{{ route('products.show', $product->slug) }}">
-                <span aria-hidden="true" class="absolute inset-0"></span>
+              <a class="font-medium text-gray-900 dark:text-gray-300/70"
+                 href="{{ route('products.show', $product->slug) }}">
                 {{ $product->title }}
               </a>
-            </h3>
 
-            <p class="mt-4 text-base font-medium text-gray-900">
+            <p class="mt-4 text-base font-medium text-gray-900 dark:text-gray-300/70">
               {{ $product->formatPrice() }}
             </p>
             <flux:badge rounded color="sky"
