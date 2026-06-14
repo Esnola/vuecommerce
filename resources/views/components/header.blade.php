@@ -17,6 +17,7 @@
       </div>
       <div class="hidden sm:ml-6 sm:block">
         <div class="flex items-center">
+          @auth
           <button type="button"
                   class="relative rounded-full p-1 text-gray-400 hover:text-white focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500">
             <span class="absolute -inset-1.5"></span>
@@ -41,13 +42,27 @@
               <a href="#"
                  class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-100 focus:outline-hidden">Your
                 profile</a>
-              <a href="#"
-                 class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-100 focus:outline-hidden">Settings</a>
-              <a href="#"
-                 class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-100 focus:outline-hidden">Sign
-                out</a>
+              <div class="px-4 py-2">
+                <p class="text-sm font-medium text-gray-800 dark:text-white">
+                  {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
+                </p>
+                <p class="truncate text-xs text-gray-500 dark:text-gray-400">{{ auth()->user()->email }}</p>
+              </div>
+              <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit"
+                        class="block w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-100 focus:outline-hidden">
+                  {{ __('Sign out') }}
+                </button>
+              </form>
             </el-menu>
           </el-dropdown>
+          @else
+            <a href="{{ route('login') }}"
+               class="rounded-md bg-white/10 px-3 py-2 text-sm font-medium text-white hover:bg-white/20">
+              {{ __('Sign In') }}
+            </a>
+          @endauth
         </div>
       </div>
       <div class="-mr-2 flex sm:hidden">
@@ -74,14 +89,17 @@
       <x-partials.main-links/>
     </div>
     <div class="border-t border-white/10 pt-4 pb-3">
+      @auth
       <div class="flex items-center px-5">
         <div class="shrink-0">
           <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                alt="" class="size-10 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"/>
         </div>
         <div class="ml-3">
-          <div class="text-base font-medium text-white">Tom Cook</div>
-          <div class="text-sm font-medium text-gray-400">tom@example.com</div>
+          <div class="text-base font-medium text-white">
+            {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
+          </div>
+          <div class="text-sm font-medium text-gray-400">{{ auth()->user()->email }}</div>
         </div>
         <button type="button"
                 class="relative ml-auto shrink-0 rounded-full p-1 text-gray-400 hover:text-white focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500">
@@ -98,12 +116,22 @@
         <a href="#"
            class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">Your
           profile</a>
-        <a href="#"
-           class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">Settings</a>
-        <a href="#"
-           class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">Sign
-          out</a>
+        <form method="POST" action="{{ route('logout') }}">
+          @csrf
+          <button type="submit"
+                  class="block w-full rounded-md px-3 py-2 text-left text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">
+            {{ __('Sign out') }}
+          </button>
+        </form>
       </div>
+      @else
+        <div class="px-5">
+          <a href="{{ route('login') }}"
+             class="block rounded-md bg-white/10 px-3 py-2 text-center text-base font-medium text-white hover:bg-white/20">
+            {{ __('Sign In') }}
+          </a>
+        </div>
+      @endauth
     </div>
   </el-disclosure>
 </nav>

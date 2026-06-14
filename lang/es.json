@@ -251,5 +251,12 @@
     "No orders found.": "No se encontraron pedidos.",
     "Pending": "Pendiente",
     "Shipped": "Enviado",
-    "Delivered": "Entregado"
+    "Delivered": "Entregado",
+    "Access your account with your email and password.": "Accede a tu cuenta con tu correo electrónico y contraseña.",
+    "Email": "Correo electrónico",
+    "Password": "Contraseña",
+    "Remember me": "Recordarme",
+    "Signing in...": "Iniciando sesión...",
+    "Administrator access: test@example.com / password": "Acceso de administrador: test@example.com / password",
+    "Sign out": "Cerrar sesión"
 }

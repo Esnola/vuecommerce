@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,11 +17,17 @@ Route::prefix('products')->group(function () {
     return view('index');
   });*/
 Route::livewire('/', 'pages::index')->name('pages.index');
+Route::livewire('/login', 'pages::auth.login')
+    ->middleware('guest')
+    ->name('login');
+Route::post('/logout', AuthenticatedSessionController::class)
+    ->middleware('auth')
+    ->name('logout');
 Route::prefix('products')->group(function () {
     Route::livewire('/', 'pages::products.index')->name('products.index');
     Route::livewire('/{slug}', 'pages::products.show')->name('products.show');
 });
 Route::livewire('/orders', 'pages::orders.index')
-    ->middleware('can:view-orders')
+    ->middleware(['auth', 'can:view-orders'])
     ->name('orders.index');
 Route::livewire('/contact', 'pages::contact')->name('pages.contact');

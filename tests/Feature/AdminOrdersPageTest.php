@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 it('forbids guests from viewing orders', function () {
-    $this->get(route('orders.index'))->assertForbidden();
+    $this->get(route('orders.index'))->assertRedirect(route('login'));
 });
 
 it('forbids non admin users from viewing orders', function () {
