@@ -6,7 +6,7 @@
     //
   };
 ?>
-<div class="bg-white py-24 sm:py-32">
+<div class="bg-white dark:bg-gray-900 py-24 sm:py-32">
   <x-partials.fromblog/>
   <x-partials.ourteam/>
   <x-partials.incentives/>
