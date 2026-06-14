@@ -1,29 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
     const mainImage = document.getElementById('mainImage');
+    const zoomContainer = document.getElementById('mainImageZoom');
     const thumbs = document.querySelectorAll('[data-thumbs]');
-
-    /*
-    const firstImage = mainImage.src
-    const imgsThumbs = [...thumbs].map(thumb => thumb.src);
-
-            const rebuild = () => {
-                thumbs.forEach((thumb, index) => {
-                    thumb.src = imgsThumbs[index]
-                })
-            }
-            mainImage.addEventListener('mouseover', () => {
-                mainImage.src = firstImage;
-                rebuild();
-            })
-       */
 
     thumbs.forEach(image => {
         image.addEventListener('mouseover', () => {
-            //  const actualImage = mainImage.src
             mainImage.src = image.src;
-            // image.src = actualImage;
         })
     })
 
+    if (mainImage && zoomContainer) {
+        const zoomScale = 2;
 
+        zoomContainer.addEventListener('mouseenter', () => {
+            mainImage.style.transform = `scale(${zoomScale})`;
+        })
+
+        zoomContainer.addEventListener('mousemove', (event) => {
+            const rect = zoomContainer.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width) * 100;
+            const y = ((event.clientY - rect.top) / rect.height) * 100;
+            mainImage.style.transformOrigin = `${x}% ${y}%`;
+        })
+
+        zoomContainer.addEventListener('mouseleave', () => {
+            mainImage.style.transform = 'scale(1)';
+            mainImage.style.transformOrigin = 'center center';
+        })
+    }
 })

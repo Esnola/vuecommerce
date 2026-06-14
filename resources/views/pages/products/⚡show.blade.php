@@ -73,8 +73,10 @@
       </dl>
     </div>
     <div class="flex flex-col gap-4 sm:gap-6 lg:gap-8">
-      <img id="mainImage" src="{{$product->mainImage()}}" alt="{{$product->title}}"
-           class="aspect-square rounded-lg bg-gray-100 object-cover shadow-xl"/>
+      <div id="mainImageZoom" class="relative aspect-square cursor-zoom-in overflow-hidden rounded-lg shadow-xl">
+        <img id="mainImage" src="{{$product->mainImage()}}" alt="{{$product->title}}"
+             class="aspect-square h-full w-full rounded-lg bg-gray-100 object-cover transition-transform duration-100 ease-out"/>
+      </div>
       <div class="flex items-center jusitfy-center gap-2">
         @foreach ($product->images->skip(1) as $image)
           <img data-thumbs src="{{ $image->url }}" alt="{{$product->title}}"
