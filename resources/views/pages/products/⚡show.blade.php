@@ -85,7 +85,6 @@
       </div>
     </div>
   </div>
+
+  @vite('resources/js/show-images.js')
 </div>
-
-
-@vite('resources/js/show-images.js')
