@@ -1,8 +1,10 @@
-<div class="bg-white dark:bg-gray-900 py-24 sm:py-32">
+<div class="bg-white dark:bg-gray-800 py-24 sm:py-32">
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-2xl lg:mx-0">
-      <h2 class="text-4xl font-semibold tracking-tight text-pretty text-gray-900 dark:text-white sm:text-5xl">Our team</h2>
-      <p class="mt-6 text-lg/8 text-gray-600 dark:text-gray-400">We’re a dynamic group of individuals who are passionate about what we do
+      <h2 class="text-4xl font-semibold tracking-tight text-pretty text-gray-800 dark:text-white sm:text-5xl">Our
+        team</h2>
+      <p class="mt-6 text-lg/8 text-gray-600 dark:text-gray-400">We’re a dynamic group of individuals who are passionate
+        about what we do
         and dedicated to delivering the best results for our clients.</p>
     </div>
     <ul role="list"
@@ -10,7 +12,7 @@
       <li>
         <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
              alt="" class="aspect-3/2 w-full rounded-2xl object-cover outline-1 -outline-offset-1 outline-black/5"/>
-        <h3 class="mt-6 text-lg/8 font-semibold tracking-tight text-gray-900 dark:text-white">Lindsay Walton</h3>
+        <h3 class="mt-6 text-lg/8 font-semibold tracking-tight text-gray-800 dark:text-white">Lindsay Walton</h3>
         <p class="text-base/7 text-gray-600 dark:text-gray-400">Front-end Developer</p>
         <ul role="list" class="mt-6 flex gap-x-6">
           <li>
@@ -35,7 +37,7 @@
       <li>
         <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
              alt="" class="aspect-3/2 w-full rounded-2xl object-cover outline-1 -outline-offset-1 outline-black/5"/>
-        <h3 class="mt-6 text-lg/8 font-semibold tracking-tight text-gray-900 dark:text-white">Courtney Henry</h3>
+        <h3 class="mt-6 text-lg/8 font-semibold tracking-tight text-gray-800 dark:text-white">Courtney Henry</h3>
         <p class="text-base/7 text-gray-600 dark:text-gray-400">Designer</p>
         <ul role="list" class="mt-6 flex gap-x-6">
           <li>
@@ -60,7 +62,7 @@
       <li>
         <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
              alt="" class="aspect-3/2 w-full rounded-2xl object-cover outline-1 -outline-offset-1 outline-black/5"/>
-        <h3 class="mt-6 text-lg/8 font-semibold tracking-tight text-gray-900 dark:text-white">Tom Cook</h3>
+        <h3 class="mt-6 text-lg/8 font-semibold tracking-tight text-gray-800 dark:text-white">Tom Cook</h3>
         <p class="text-base/7 text-gray-600 dark:text-gray-400">Director of Product</p>
         <ul role="list" class="mt-6 flex gap-x-6">
           <li>
@@ -85,7 +87,7 @@
       <li>
         <img src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
              alt="" class="aspect-3/2 w-full rounded-2xl object-cover outline-1 -outline-offset-1 outline-black/5"/>
-        <h3 class="mt-6 text-lg/8 font-semibold tracking-tight text-gray-900 dark:text-white">Whitney Francis</h3>
+        <h3 class="mt-6 text-lg/8 font-semibold tracking-tight text-gray-800 dark:text-white">Whitney Francis</h3>
         <p class="text-base/7 text-gray-600 dark:text-gray-400">Copywriter</p>
         <ul role="list" class="mt-6 flex gap-x-6">
           <li>
@@ -110,7 +112,7 @@
       <li>
         <img src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
              alt="" class="aspect-3/2 w-full rounded-2xl object-cover outline-1 -outline-offset-1 outline-black/5"/>
-        <h3 class="mt-6 text-lg/8 font-semibold tracking-tight text-gray-900 dark:text-white">Leonard Krasner</h3>
+        <h3 class="mt-6 text-lg/8 font-semibold tracking-tight text-gray-800 dark:text-white">Leonard Krasner</h3>
         <p class="text-base/7 text-gray-600 dark:text-gray-400">Senior Designer</p>
         <ul role="list" class="mt-6 flex gap-x-6">
           <li>
@@ -135,7 +137,7 @@
       <li>
         <img src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
              alt="" class="aspect-3/2 w-full rounded-2xl object-cover outline-1 -outline-offset-1 outline-black/5"/>
-        <h3 class="mt-6 text-lg/8 font-semibold tracking-tight text-gray-900 dark:text-white">Floyd Miles</h3>
+        <h3 class="mt-6 text-lg/8 font-semibold tracking-tight text-gray-800 dark:text-white">Floyd Miles</h3>
         <p class="text-base/7 text-gray-600 dark:text-gray-400">Principal Designer</p>
         <ul role="list" class="mt-6 flex gap-x-6">
           <li>

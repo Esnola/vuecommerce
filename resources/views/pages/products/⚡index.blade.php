@@ -24,7 +24,7 @@
   };
 ?>
 
-<div class="bg-white dark:bg-gray-900">
+<div class="bg-white dark:bg-gray-800">
   <div class="mx-auto max-w-7xl overflow-hidden sm:px-6 lg:px-8">
     <h2 class="sr-only">{{$title}}</h2>
 
@@ -43,12 +43,12 @@
           @endif
 
           <div class="pt-10 pb-4 text-center">
-              <a class="font-medium text-gray-900 dark:text-gray-300/70"
-                 href="{{ route('products.show', $product->slug) }}">
-                {{ $product->title }}
-              </a>
+            <a class="font-medium text-gray-800 dark:text-gray-300/70"
+               href="{{ route('products.show', $product->slug) }}">
+              {{ $product->title }}
+            </a>
 
-            <p class="mt-4 text-base font-medium text-gray-900 dark:text-gray-300/70">
+            <p class="mt-4 text-base font-medium text-gray-800 dark:text-gray-300/70">
               {{ $product->formatPrice() }}
             </p>
             <flux:badge rounded color="sky"
