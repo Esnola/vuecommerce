@@ -11,8 +11,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
-#[Fillable(['first_name', 'last_name', 'email', 'phone', 'status', 'password'])]
+#[Fillable(['first_name', 'last_name', 'email', 'phone', 'avatar', 'status', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -31,6 +32,13 @@ class User extends Authenticatable
     public function hasVerifiedEmail(): bool
     {
         return $this->email_verified_at !== null;
+    }
+
+    public function avatarUrl(): ?string
+    {
+        return $this->avatar === null
+            ? null
+            : Storage::disk('public')->url($this->avatar);
     }
 
     public function reviews(): HasMany

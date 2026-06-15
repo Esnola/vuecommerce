@@ -14,12 +14,26 @@ new class extends Component
 
     public string $selectedBuyerId = '';
 
+    public string $sortBy = 'created_at';
+
+    public string $sortDirection = 'desc';
+
     public function mount(): void
     {
         Gate::authorize('view-orders');
     }
 
     public function updatedSelectedBuyerId(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSortBy(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSortDirection(): void
     {
         $this->resetPage();
     }
@@ -36,7 +50,22 @@ new class extends Component
 
     public function orders(): LengthAwarePaginator
     {
+        $ordersTable = (new Order)->getTable();
+        $sortColumn = match ($this->sortBy) {
+            'total_price' => 'total_price',
+            'buyer_orders_count' => 'buyer_orders_count',
+            'items_count' => 'items_count',
+            default => 'created_at',
+        };
+        $sortDirection = $this->sortDirection === 'asc' ? 'asc' : 'desc';
+        $buyerOrdersCount = Order::query()
+            ->from("{$ordersTable} as buyer_orders")
+            ->selectRaw('count(*)')
+            ->whereColumn('buyer_orders.created_by', "{$ordersTable}.created_by");
+
         return Order::query()
+            ->select("{$ordersTable}.*")
+            ->addSelect(['buyer_orders_count' => $buyerOrdersCount])
             ->with([
                 'buyer:id,first_name,last_name,email,phone',
                 'items.product:id,title,slug,sku',
@@ -46,7 +75,8 @@ new class extends Component
                 $this->selectedBuyerId !== '',
                 fn ($query) => $query->where('created_by', (int) $this->selectedBuyerId),
             )
-            ->latest()
+            ->orderBy($sortColumn, $sortDirection)
+            ->orderByDesc('id')
             ->paginate(10);
     }
 };
@@ -64,8 +94,8 @@ new class extends Component
       <flux:text>{{ __('Review every order and its purchased products.') }}</flux:text>
     </div>
 
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
-      <flux:field class="max-w-md">
+    <div class="grid gap-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5 md:grid-cols-3">
+      <flux:field>
         <flux:label>{{ __('Filter by user') }}</flux:label>
         <flux:select wire:model.live="selectedBuyerId">
           <flux:select.option value="">{{ __('All users') }}</flux:select.option>
@@ -74,6 +104,24 @@ new class extends Component
               {{ $buyer->first_name }} {{ $buyer->last_name }} · {{ $buyer->email }}
             </flux:select.option>
           @endforeach
+        </flux:select>
+      </flux:field>
+
+      <flux:field>
+        <flux:label>{{ __('Sort by') }}</flux:label>
+        <flux:select wire:model.live="sortBy">
+          <flux:select.option value="created_at">{{ __('Order date') }}</flux:select.option>
+          <flux:select.option value="total_price">{{ __('Total amount') }}</flux:select.option>
+          <flux:select.option value="buyer_orders_count">{{ __('Orders per user') }}</flux:select.option>
+          <flux:select.option value="items_count">{{ __('Number of items') }}</flux:select.option>
+        </flux:select>
+      </flux:field>
+
+      <flux:field>
+        <flux:label>{{ __('Direction') }}</flux:label>
+        <flux:select wire:model.live="sortDirection">
+          <flux:select.option value="desc">{{ __('Descending') }}</flux:select.option>
+          <flux:select.option value="asc">{{ __('Ascending') }}</flux:select.option>
         </flux:select>
       </flux:field>
     </div>
@@ -132,6 +180,9 @@ new class extends Component
               <flux:badge :color="$badgeColor">{{ $order->status->label() }}</flux:badge>
               <flux:badge color="zinc">
                 {{ trans_choice(':count item|:count items', $order->items_count, ['count' => $order->items_count]) }}
+              </flux:badge>
+              <flux:badge color="zinc">
+                {{ __('Buyer orders') }}: {{ $order->buyer_orders_count }}
               </flux:badge>
               <flux:icon.chevron-down class="size-5 text-gray-500 transition-transform group-open:rotate-180 dark:text-gray-400" />
             </div>

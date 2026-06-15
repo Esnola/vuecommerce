@@ -107,3 +107,81 @@ it('allows admins to filter orders by buyer', function () {
         ->assertSee("#{$selectedOrder->id}")
         ->assertDontSee("#{$otherOrder->id}");
 });
+
+it('allows admins to sort orders by total amount', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+    $buyer = User::factory()->create();
+    $lowestOrder = Order::factory()->create([
+        'created_by' => $buyer,
+        'total_price' => 10,
+    ]);
+    $middleOrder = Order::factory()->create([
+        'created_by' => $buyer,
+        'total_price' => 50,
+    ]);
+    $highestOrder = Order::factory()->create([
+        'created_by' => $buyer,
+        'total_price' => 100,
+    ]);
+
+    $this->actingAs($admin);
+
+    Livewire::test('pages::orders.index')
+        ->set('sortBy', 'total_price')
+        ->set('sortDirection', 'asc')
+        ->assertSeeInOrder(["#{$lowestOrder->id}", "#{$middleOrder->id}", "#{$highestOrder->id}"])
+        ->set('sortDirection', 'desc')
+        ->assertSeeInOrder(["#{$highestOrder->id}", "#{$middleOrder->id}", "#{$lowestOrder->id}"]);
+});
+
+it('allows admins to sort orders by the buyers order count', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+    $frequentBuyer = User::factory()->create();
+    $occasionalBuyer = User::factory()->create();
+    $frequentBuyerOrders = Order::factory()
+        ->count(3)
+        ->create(['created_by' => $frequentBuyer]);
+    $occasionalBuyerOrder = Order::factory()->create(['created_by' => $occasionalBuyer]);
+    $frequentBuyerOrder = $frequentBuyerOrders->sortByDesc('id')->firstOrFail();
+
+    $this->actingAs($admin);
+
+    Livewire::test('pages::orders.index')
+        ->set('sortBy', 'buyer_orders_count')
+        ->set('sortDirection', 'asc')
+        ->assertSeeInOrder(["#{$occasionalBuyerOrder->id}", "#{$frequentBuyerOrder->id}"])
+        ->set('sortDirection', 'desc')
+        ->assertSeeInOrder(["#{$frequentBuyerOrder->id}", "#{$occasionalBuyerOrder->id}"]);
+});
+
+it('allows admins to sort orders by item count', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+    $buyer = User::factory()->create();
+    $product = Product::factory()->create();
+    $orderWithOneItem = Order::factory()->create(['created_by' => $buyer]);
+    $orderWithTwoItems = Order::factory()->create(['created_by' => $buyer]);
+    $orderWithThreeItems = Order::factory()->create(['created_by' => $buyer]);
+
+    foreach ([
+        $orderWithOneItem->id => 1,
+        $orderWithTwoItems->id => 2,
+        $orderWithThreeItems->id => 3,
+    ] as $orderId => $itemCount) {
+        OrderItem::factory()
+            ->count($itemCount)
+            ->create([
+                'order_id' => $orderId,
+                'user_id' => $buyer,
+                'product_id' => $product,
+            ]);
+    }
+
+    $this->actingAs($admin);
+
+    Livewire::test('pages::orders.index')
+        ->set('sortBy', 'items_count')
+        ->set('sortDirection', 'asc')
+        ->assertSeeInOrder(["#{$orderWithOneItem->id}", "#{$orderWithTwoItems->id}", "#{$orderWithThreeItems->id}"])
+        ->set('sortDirection', 'desc')
+        ->assertSeeInOrder(["#{$orderWithThreeItems->id}", "#{$orderWithTwoItems->id}", "#{$orderWithOneItem->id}"]);
+});

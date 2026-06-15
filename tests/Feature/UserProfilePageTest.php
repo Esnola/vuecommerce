@@ -3,7 +3,9 @@
 use App\Enums\UserStatusEnum;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
@@ -133,6 +135,7 @@ it('only accepts statuses defined by the user status enum', function () {
 
     Livewire::test('pages::users.edit', ['user' => $user])
         ->assertSet('canManageUser', true)
+        ->set('phone', '')
         ->set('status', 'inactive')
         ->call('save')
         ->assertHasErrors(['status']);
@@ -152,4 +155,63 @@ it('only accepts digits with an optional leading plus sign in the phone', functi
     'hyphens' => '+34-600-123-123',
     'plus sign after digits' => '34+600123123',
     'multiple plus signs' => '++34600123123',
+]);
+
+it('uploads an avatar to the public avatars directory', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $avatar = UploadedFile::fake()->image('avatar.jpg', 680, 680)->size(1000);
+
+    Livewire::actingAs($user)
+        ->test('pages::users.edit', ['user' => $user])
+        ->set('phone', '')
+        ->set('avatar', $avatar)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $user->refresh();
+
+    expect($user->avatar)->toStartWith('avatars/');
+    Storage::disk('public')->assertExists($user->avatar);
+});
+
+it('replaces the previous avatar when a new one is uploaded', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('avatars/old-avatar.jpg', 'old avatar');
+
+    $user = User::factory()->create(['avatar' => 'avatars/old-avatar.jpg']);
+    $avatar = UploadedFile::fake()->image('new-avatar.jpg', 400, 400);
+
+    Livewire::actingAs($user)
+        ->test('pages::users.edit', ['user' => $user])
+        ->set('phone', '')
+        ->set('avatar', $avatar)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $user->refresh();
+
+    Storage::disk('public')->assertMissing('avatars/old-avatar.jpg');
+    Storage::disk('public')->assertExists($user->avatar);
+});
+
+it('rejects invalid avatar uploads', function (UploadedFile $avatar) {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+
+    Livewire::actingAs($user)
+        ->test('pages::users.edit', ['user' => $user])
+        ->set('phone', '')
+        ->set('avatar', $avatar)
+        ->call('save')
+        ->assertHasErrors(['avatar']);
+
+    expect($user->refresh()->avatar)->toBeNull();
+})->with([
+    'non-image file' => [fn () => UploadedFile::fake()->create('avatar.pdf', 100, 'application/pdf')],
+    'file over one megabyte' => [fn () => UploadedFile::fake()->image('avatar.jpg', 400, 400)->size(1001)],
+    'image wider than 680 pixels' => [fn () => UploadedFile::fake()->image('avatar.jpg', 681, 680)],
+    'image taller than 680 pixels' => [fn () => UploadedFile::fake()->image('avatar.jpg', 680, 681)],
 ]);

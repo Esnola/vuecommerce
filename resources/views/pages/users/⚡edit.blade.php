@@ -3,12 +3,17 @@
 use App\Enums\UserStatusEnum;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\File;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\WithFileUploads;
 
 new class extends Component
 {
+    use WithFileUploads;
+
     #[Locked]
     public User $user;
 
@@ -22,6 +27,8 @@ new class extends Component
     public string $email = '';
 
     public string $phone = '';
+
+    public $avatar;
 
     public string $status = '';
 
@@ -66,6 +73,12 @@ new class extends Component
                 Rule::unique(User::class)->ignore($this->user),
             ],
             'phone' => ['nullable', 'string', 'max:255', 'regex:/^\+?[0-9]+$/'],
+            'avatar' => [
+                'nullable',
+                File::image()
+                    ->max('1mb')
+                    ->dimensions(Rule::dimensions()->maxWidth(680)->maxHeight(680)),
+            ],
             'password' => ['nullable', 'string', 'min:8', 'same:passwordConfirmation'],
             'passwordConfirmation' => ['nullable', 'string'],
         ]);
@@ -78,6 +91,12 @@ new class extends Component
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?: null,
         ];
+
+        $previousAvatar = $this->user->avatar;
+
+        if ($validated['avatar'] !== null) {
+            $attributes['avatar'] = $validated['avatar']->store('avatars', 'public');
+        }
 
         if ($validated['password'] !== '') {
             $attributes['password'] = $validated['password'];
@@ -104,6 +123,11 @@ new class extends Component
 
         $this->user->forceFill($attributes)->save();
 
+        if ($validated['avatar'] !== null && $previousAvatar !== null) {
+            Storage::disk('public')->delete($previousAvatar);
+        }
+
+        $this->avatar = null;
         $this->password = '';
         $this->passwordConfirmation = '';
         $this->emailVerified = $this->user->email_verified_at !== null;
@@ -134,6 +158,40 @@ new class extends Component
         <div class="flex flex-col gap-1">
           <flux:heading size="lg">{{ __('Personal information') }}</flux:heading>
           <flux:text>{{ __('Information used to identify and contact this user.') }}</flux:text>
+        </div>
+
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
+          @if ($avatar && str_starts_with($avatar->getMimeType(), 'image/'))
+            <img
+              src="{{ $avatar->temporaryUrl() }}"
+              alt="{{ __('Avatar preview') }}"
+              class="size-24 rounded-full object-cover ring-2 ring-gray-200 dark:ring-white/15"
+            />
+          @elseif ($user->avatarUrl())
+            <img
+              src="{{ $user->avatarUrl() }}"
+              alt="{{ __('User avatar') }}"
+              class="size-24 rounded-full object-cover ring-2 ring-gray-200 dark:ring-white/15"
+            />
+          @else
+            <div class="flex size-24 items-center justify-center rounded-full bg-gray-100 text-2xl font-semibold text-gray-500 ring-2 ring-gray-200 dark:bg-white/10 dark:text-gray-300 dark:ring-white/15">
+              {{ str($firstName)->substr(0, 1)->append(str($lastName)->substr(0, 1))->upper() }}
+            </div>
+          @endif
+
+          <flux:field class="flex-1">
+            <flux:label>{{ __('Avatar') }}</flux:label>
+            <flux:input
+              wire:model="avatar"
+              type="file"
+              accept="image/*"
+            />
+            <flux:description>{{ __('Image up to 680 x 680 pixels and 1 MB.') }}</flux:description>
+            <flux:error name="avatar" />
+            <div wire:loading wire:target="avatar">
+              <flux:text>{{ __('Uploading image...') }}</flux:text>
+            </div>
+          </flux:field>
         </div>
 
         <div class="grid gap-6 sm:grid-cols-2">
