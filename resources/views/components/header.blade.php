@@ -45,6 +45,10 @@
                  class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
                 {{ __('My purchases') }}
               </a>
+              <a href="{{ route('favorites.index') }}"
+                 class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
+                {{ __('My favorites') }}
+              </a>
 
               <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -118,6 +122,10 @@
           <a href="{{ route('purchases.index') }}"
              class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">
             {{ __('My purchases') }}
+          </a>
+          <a href="{{ route('favorites.index') }}"
+             class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">
+            {{ __('My favorites') }}
           </a>
           <form method="POST" action="{{ route('logout') }}">
             @csrf

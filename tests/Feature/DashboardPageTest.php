@@ -2,6 +2,7 @@
 
 use App\Enums\UserStatusEnum;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -15,6 +16,7 @@ it('redirects guests to login', function () {
 it('shows profile and purchases actions to customers', function () {
     $user = User::factory()->create(['is_admin' => false]);
     Order::factory()->count(2)->create(['created_by' => $user]);
+    $user->favoriteProducts()->attach(Product::factory()->count(2)->create());
 
     $this->actingAs($user)
         ->get(route('dashboard'))
@@ -22,7 +24,9 @@ it('shows profile and purchases actions to customers', function () {
         ->assertSee('Dashboard')
         ->assertSee(route('users.edit', $user))
         ->assertSee(route('purchases.index'))
+        ->assertSee(route('favorites.index'))
         ->assertSee('2 orders')
+        ->assertSee('2 favorites')
         ->assertDontSee('href="'.route('users.index').'"', false)
         ->assertDontSee('href="'.route('orders.index').'"', false);
 });

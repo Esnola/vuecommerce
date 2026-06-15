@@ -16,11 +16,15 @@ new class extends Component
     #[Locked]
     public int $orderCount = 0;
 
+    #[Locked]
+    public int $favoriteCount = 0;
+
     public function mount(): void
     {
         abort_unless(auth()->user()->canAccessAccount(), 403);
 
         $this->purchaseCount = auth()->user()->orders()->count();
+        $this->favoriteCount = auth()->user()->favoriteProducts()->count();
 
         if (auth()->user()->is_admin) {
             $this->userCount = User::query()->count();
@@ -66,6 +70,22 @@ new class extends Component
         <div>
           <flux:button :href="route('purchases.index')" icon="receipt-percent">
             {{ __('View purchases') }}
+          </flux:button>
+        </div>
+      </flux:card>
+
+      <flux:card class="flex flex-col gap-5">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex flex-col gap-1">
+            <flux:heading size="lg">{{ __('My favorites') }}</flux:heading>
+            <flux:text>{{ trans_choice(':count favorite|:count favorites', $favoriteCount, ['count' => $favoriteCount]) }}</flux:text>
+          </div>
+          <flux:icon.heart class="size-8 text-rose-600 dark:text-rose-400" />
+        </div>
+
+        <div>
+          <flux:button :href="route('favorites.index')" icon="heart">
+            {{ __('Manage favorites') }}
           </flux:button>
         </div>
       </flux:card>

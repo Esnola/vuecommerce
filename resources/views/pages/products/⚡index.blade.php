@@ -14,12 +14,19 @@
 
     public function products(): LengthAwarePaginator
     {
-      return Product::query()
+      $products = Product::query()
         ->whereNull('deleted_at')
         ->with('creator')
         ->with('updater')
-        ->with('deleter')
-        ->paginate(20);
+        ->with('deleter');
+
+      if (auth()->check()) {
+        $products->withExists([
+          'favoritedByUsers as is_favorite' => fn($query) => $query->whereKey(auth()->id()),
+        ]);
+      }
+
+      return $products->paginate(20);
     }
   };
 ?>
@@ -35,6 +42,12 @@
         @endphp
 
         <div class="group relative border-r border-b border-gray-300 dark:border-gray-200/30 p-4 sm:p-6">
+          <x-favorite-button
+                  :product="$product"
+                  :favorite="(bool) ($product->is_favorite ?? false)"
+                  class="absolute top-6 right-6 z-10 bg-white/90 shadow-sm dark:bg-gray-800/90"
+          />
+
           @if($thumbnail)
             <img src="{{ $thumbnail }}" alt="{{ $product->title }}"
                  class="aspect-square rounded-lg bg-gray-200 object-cover opacity-75 group-hover:opacity-100"/>

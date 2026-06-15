@@ -53,6 +53,12 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function favoritedByUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'favorites')
+            ->withTimestamps();
+    }
+
     public function mainImage(): string
     {
         return $this->images()

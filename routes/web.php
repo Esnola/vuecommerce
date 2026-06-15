@@ -1,15 +1,18 @@
 <?php
 
 use App\Http\Controllers\AuthenticatedSessionController;
+use App\Http\Controllers\FavoriteController;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::index')->name('pages.index');
 Route::livewire('/contact', 'pages::contact')->name('pages.contact');
+Route::livewire('/preview', 'pages::product-view')->name('page.preview');
 
 Route::prefix('products')->group(function () {
     Route::livewire('/', 'pages::products.index')->name('products.index');
+    Route::livewire('/{slug}/view', 'pages::products.product-show')->name('products.show-previ');
     Route::livewire('/{slug}', 'pages::products.show')->name('products.show');
 });
 
@@ -36,7 +39,10 @@ Route::get('/email/verify/{id}/{hash}', function (string $id, string $hash) {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', AuthenticatedSessionController::class)->name('logout');
+    Route::post('/favorites/sync', [FavoriteController::class, 'sync'])->name('favorites.sync');
+    Route::post('/favorites/{product}/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
     Route::livewire('/dashboard', 'pages::dashboard')->name('dashboard');
+    Route::livewire('/favorites', 'pages::favorites.index')->name('favorites.index');
     Route::livewire('/users', 'pages::users.index')->name('users.index');
     Route::livewire('/users/{user}/edit', 'pages::users.edit')->name('users.edit');
     Route::livewire('/purchases', 'pages::purchases.index')->name('purchases.index');
