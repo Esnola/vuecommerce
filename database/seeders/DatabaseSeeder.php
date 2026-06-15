@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserStatusEnum;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -26,7 +27,10 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        $admin->forceFill(['is_admin' => true])->save();
+        $admin->forceFill([
+            'is_admin' => true,
+            'status' => UserStatusEnum::ACTIVE,
+        ])->save();
 
         $this->call([
             CountrySeeder::class,

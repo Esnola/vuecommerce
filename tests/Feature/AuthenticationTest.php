@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserStatusEnum;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -45,6 +46,78 @@ it('rejects invalid credentials', function () {
         ->set('password', 'incorrect-password')
         ->call('login')
         ->assertHasErrors(['email']);
+
+    $this->assertGuest();
+});
+
+it('rejects a pending user and explains that administrator review is required', function () {
+    User::factory()->create([
+        'email' => 'pending@example.com',
+        'password' => 'password',
+        'status' => UserStatusEnum::PENDING,
+    ]);
+
+    Livewire::test('pages::auth.login')
+        ->set('email', 'pending@example.com')
+        ->set('password', 'password')
+        ->call('login')
+        ->assertHasErrors([
+            'email' => trans('auth.pending'),
+        ]);
+
+    $this->assertGuest();
+});
+
+it('rejects an active user whose email is not verified', function () {
+    User::factory()->create([
+        'email' => 'unverified@example.com',
+        'password' => 'password',
+        'email_verified_at' => null,
+        'status' => UserStatusEnum::ACTIVE,
+    ]);
+
+    Livewire::test('pages::auth.login')
+        ->set('email', 'unverified@example.com')
+        ->set('password', 'password')
+        ->call('login')
+        ->assertHasErrors([
+            'email' => trans('auth.unverified'),
+        ]);
+
+    $this->assertGuest();
+});
+
+it('prioritizes the email verification message when a pending user is unverified', function () {
+    User::factory()->unverified()->create([
+        'email' => 'pending-unverified@example.com',
+        'password' => 'password',
+    ]);
+
+    Livewire::test('pages::auth.login')
+        ->set('email', 'pending-unverified@example.com')
+        ->set('password', 'password')
+        ->call('login')
+        ->assertHasErrors([
+            'email' => trans('auth.unverified'),
+        ]);
+
+    $this->assertGuest();
+});
+
+it('rejects a suspended user and explains that the account is suspended', function () {
+    User::factory()->create([
+        'email' => 'suspended@example.com',
+        'password' => 'password',
+        'status' => UserStatusEnum::SUSPEND,
+    ]);
+
+    Livewire::test('pages::auth.login')
+        ->set('email', 'suspended@example.com')
+        ->set('password', 'password')
+        ->call('login')
+        ->assertHasErrors([
+            'email' => trans('auth.suspended'),
+        ]);
 
     $this->assertGuest();
 });

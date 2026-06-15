@@ -1,6 +1,10 @@
 <?php
 
+use App\Enums\UserStatusEnum;
+use App\Models\User;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -13,6 +17,13 @@ new class extends Component
     public string $password = '';
 
     public bool $remember = false;
+
+    public bool $isDev = false;
+
+    public function mount(): void
+    {
+        $this->isDev = ! App::environment('production');
+    }
 
     public function login(): void
     {
@@ -33,7 +44,9 @@ new class extends Component
             ]);
         }
 
-        if (! Auth::attempt($credentials, $this->remember)) {
+        $user = User::query()->where('email', $credentials['email'])->first();
+
+        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             RateLimiter::hit($throttleKey, 60);
 
             throw ValidationException::withMessages([
@@ -42,6 +55,27 @@ new class extends Component
         }
 
         RateLimiter::clear($throttleKey);
+
+        if ($user->status === UserStatusEnum::SUSPEND) {
+            throw ValidationException::withMessages([
+                'email' => trans('auth.suspended'),
+            ]);
+        }
+
+        if (! $user->hasVerifiedEmail()) {
+            throw ValidationException::withMessages([
+                'email' => trans('auth.unverified'),
+            ]);
+        }
+
+        if ($user->status === UserStatusEnum::PENDING) {
+            throw ValidationException::withMessages([
+                'email' => trans('auth.pending'),
+            ]);
+        }
+
+        Auth::login($user, $this->remember);
+
         session()->regenerate();
 
         $this->redirectIntended(route('pages.index'));
@@ -96,9 +130,11 @@ new class extends Component
         </flux:button>
       </form>
 
-      <p class="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
-        {{ __('Administrator access: test@example.com / password') }}
-      </p>
+      @if ($this->isDev)
+        <p class="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
+          {{ __('Administrator access: test@example.com / password') }}
+        </p>
+      @endif
     </div>
   </div>
 </main>

@@ -15,10 +15,9 @@
           </div>
         </div>
       </div>
-      <div class="hidden sm:ml-6 sm:block">
-        <div class="flex items-center">
+      <div class="hidden sm:ml-3 min-w-fit sm:flex items-center">
           @auth
-          <button type="button"
+            <!--    <button type="button"
                   class="relative rounded-full p-1 text-gray-400 hover:text-white focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500">
             <span class="absolute -inset-1.5"></span>
             <span class="sr-only">View notifications</span>
@@ -28,7 +27,7 @@
                     stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
-          <!-- Profile dropdown -->
+        Profile dropdown -->
           <el-dropdown class="relative ml-3">
             <button class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
               <span class="absolute -inset-1.5"></span>
@@ -39,9 +38,14 @@
 
             <el-menu anchor="bottom end" popover
                      class="w-48 origin-top-right rounded-md bg-white dark:bg-gray-800 py-1 shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-              <a href="#"
-                 class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-100 focus:outline-hidden">Your
-                profile</a>
+              <a href="{{ route('users.edit', auth()->user()) }}"
+                 class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-100 focus:outline-hidden">
+                {{ __('Your profile') }}
+              </a>
+              <a href="{{ route('purchases.index') }}"
+                 class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-100 focus:outline-hidden">
+                {{ __('My purchases') }}
+              </a>
               <div class="px-4 py-2">
                 <p class="text-sm font-medium text-gray-800 dark:text-white">
                   {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
@@ -58,12 +62,13 @@
             </el-menu>
           </el-dropdown>
           @else
+            <div class="flex items-center gap-x-4">
             <a href="{{ route('login') }}"
-               class="rounded-md bg-white/10 px-3 py-2 text-sm font-medium text-white hover:bg-white/20">
-              {{ __('Sign In') }}
+               class="min-w-fit rounded-md bg-white/10 px-3 py-2 text-[10px] font-medium text-white hover:bg-white/20">
+              {{ __('Log In') }}
             </a>
+            </div>
           @endauth
-        </div>
       </div>
       <div class="-mr-2 flex sm:hidden">
         <!-- Mobile menu button -->
@@ -113,9 +118,14 @@
         </button>
       </div>
       <div class="mt-3 space-y-1 px-2">
-        <a href="#"
-           class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">Your
-          profile</a>
+        <a href="{{ route('users.edit', auth()->user()) }}"
+           class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">
+          {{ __('Your profile') }}
+        </a>
+        <a href="{{ route('purchases.index') }}"
+           class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">
+          {{ __('My purchases') }}
+        </a>
         <form method="POST" action="{{ route('logout') }}">
           @csrf
           <button type="submit"

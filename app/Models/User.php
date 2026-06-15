@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserStatusEnum;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -17,6 +18,20 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    protected $attributes = [
+        'status' => UserStatusEnum::PENDING->value,
+    ];
+
+    public function canAccessAccount(): bool
+    {
+        return $this->hasVerifiedEmail() && $this->status === UserStatusEnum::ACTIVE;
+    }
+
+    public function hasVerifiedEmail(): bool
+    {
+        return $this->email_verified_at !== null;
+    }
 
     public function reviews(): HasMany
     {
@@ -44,6 +59,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'is_admin' => 'boolean',
             'password' => 'hashed',
+            'status' => UserStatusEnum::class,
         ];
     }
 }
