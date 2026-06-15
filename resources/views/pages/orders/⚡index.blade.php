@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Order;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
@@ -10,9 +12,26 @@ new class extends Component
 {
     use WithPagination;
 
+    public string $selectedBuyerId = '';
+
     public function mount(): void
     {
         Gate::authorize('view-orders');
+    }
+
+    public function updatedSelectedBuyerId(): void
+    {
+        $this->resetPage();
+    }
+
+    public function buyers(): Collection
+    {
+        return User::query()
+            ->select(['id', 'first_name', 'last_name', 'email'])
+            ->whereHas('orders')
+            ->orderBy('first_name')
+            ->orderBy('last_name')
+            ->get();
     }
 
     public function orders(): LengthAwarePaginator
@@ -23,6 +42,10 @@ new class extends Component
                 'items.product:id,title,slug,sku',
             ])
             ->withCount('items')
+            ->when(
+                $this->selectedBuyerId !== '',
+                fn ($query) => $query->where('created_by', (int) $this->selectedBuyerId),
+            )
             ->latest()
             ->paginate(10);
     }
@@ -30,6 +53,7 @@ new class extends Component
 ?>
 
 @php
+  $buyers = $this->buyers();
   $orders = $this->orders();
 @endphp
 
@@ -38,6 +62,20 @@ new class extends Component
     <div class="flex flex-col gap-2">
       <flux:heading size="xl">{{ __('Orders') }}</flux:heading>
       <flux:text>{{ __('Review every order and its purchased products.') }}</flux:text>
+    </div>
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
+      <flux:field class="max-w-md">
+        <flux:label>{{ __('Filter by user') }}</flux:label>
+        <flux:select wire:model.live="selectedBuyerId">
+          <flux:select.option value="">{{ __('All users') }}</flux:select.option>
+          @foreach ($buyers as $buyer)
+            <flux:select.option wire:key="buyer-filter-{{ $buyer->id }}" :value="(string) $buyer->id">
+              {{ $buyer->first_name }} {{ $buyer->last_name }} · {{ $buyer->email }}
+            </flux:select.option>
+          @endforeach
+        </flux:select>
+      </flux:field>
     </div>
 
     <div class="flex flex-col gap-5">
@@ -50,11 +88,12 @@ new class extends Component
           };
         @endphp
 
-        <article
+        <details
           wire:key="order-{{ $order->id }}"
-          class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-white/5"
+          data-order="{{ $order->id }}"
+          class="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-white/5"
         >
-          <div class="grid gap-5 border-b border-gray-200 p-5 dark:border-white/10 lg:grid-cols-[1fr_auto]">
+          <summary class="grid cursor-pointer list-none gap-5 p-5 [&::-webkit-details-marker]:hidden lg:grid-cols-[1fr_auto]">
             <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <div>
                 <p class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Order') }}</p>
@@ -94,10 +133,11 @@ new class extends Component
               <flux:badge color="zinc">
                 {{ trans_choice(':count item|:count items', $order->items_count, ['count' => $order->items_count]) }}
               </flux:badge>
+              <flux:icon.chevron-down class="size-5 text-gray-500 transition-transform group-open:rotate-180 dark:text-gray-400" />
             </div>
-          </div>
+          </summary>
 
-          <div class="overflow-x-auto">
+          <div class="overflow-x-auto border-t border-gray-200 dark:border-white/10">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-white/10">
               <thead class="bg-gray-50 dark:bg-white/5">
                 <tr>
@@ -135,7 +175,7 @@ new class extends Component
               </tbody>
             </table>
           </div>
-        </article>
+        </details>
       @empty
         <flux:callout icon="shopping-bag">
           <flux:callout.heading>{{ __('No orders found.') }}</flux:callout.heading>

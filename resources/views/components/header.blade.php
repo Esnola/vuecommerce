@@ -63,6 +63,10 @@
           </el-dropdown>
           @else
             <div class="flex items-center gap-x-4">
+            <a href="{{ route('register') }}"
+               class="min-w-fit rounded-md px-3 py-2 text-[10px] font-medium text-gray-300 hover:bg-white/5 hover:text-white">
+              {{ __('Register') }}
+            </a>
             <a href="{{ route('login') }}"
                class="min-w-fit rounded-md bg-white/10 px-3 py-2 text-[10px] font-medium text-white hover:bg-white/20">
               {{ __('Log In') }}
@@ -135,7 +139,11 @@
         </form>
       </div>
       @else
-        <div class="px-5">
+        <div class="flex flex-col gap-2 px-5">
+          <a href="{{ route('register') }}"
+             class="block rounded-md px-3 py-2 text-center text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">
+            {{ __('Register') }}
+          </a>
           <a href="{{ route('login') }}"
              class="block rounded-md bg-white/10 px-3 py-2 text-center text-base font-medium text-white hover:bg-white/20">
             {{ __('Sign In') }}

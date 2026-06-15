@@ -286,11 +286,19 @@
     "Save changes": "Guardar cambios",
     "Saving...": "Guardando...",
     "Select a status": "Selecciona un estado",
+    "Filter by user": "Filtrar por usuario",
+    "All users": "Todos los usuarios",
     "Status": "Estado",
     "Suspend": "Suspendido",
     "Update the account information and security settings.": "Actualiza la información de la cuenta y los ajustes de seguridad.",
     "User updated successfully.": "Usuario actualizado correctamente.",
     "You have not made any purchases yet.": "Todavía no has realizado ninguna compra.",
     "Your completed orders will appear here.": "Tus pedidos completados aparecerán aquí.",
-    "Your profile": "Tu perfil"
+    "Your profile": "Tu perfil",
+    "Already have an account?": "¿Ya tienes una cuenta?",
+    "Create account": "Crear cuenta",
+    "Creating account...": "Creando cuenta...",
+    "Don't have an account?": "¿No tienes una cuenta?",
+    "Enter your details to request access to Vuecommerce.": "Introduce tus datos para solicitar acceso a Vuecommerce.",
+    "Your account has been created and is awaiting approval.": "Tu cuenta ha sido creada y está pendiente de aprobación."
 }

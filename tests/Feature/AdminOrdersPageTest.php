@@ -6,6 +6,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
@@ -62,7 +63,10 @@ it('allows admins to view all order details', function () {
         ->assertSee('Premium Keyboard')
         ->assertSee('KEY-001')
         ->assertSee('179,98')
-        ->assertSee('Delivered');
+        ->assertSee('Delivered')
+        ->assertSee('data-order="'.$order->id.'"', false)
+        ->assertSee('<details', false)
+        ->assertSee('<summary', false);
 });
 
 it('only shows the orders navigation link to admins', function () {
@@ -76,4 +80,30 @@ it('only shows the orders navigation link to admins', function () {
     $this->actingAs($user)
         ->get(route('pages.index'))
         ->assertDontSee(route('orders.index'));
+});
+
+it('allows admins to filter orders by buyer', function () {
+    $admin = User::factory()->create(['is_admin' => true]);
+    $selectedBuyer = User::factory()->create([
+        'first_name' => 'Selected',
+        'last_name' => 'Buyer',
+        'email' => 'selected@example.com',
+    ]);
+    $otherBuyer = User::factory()->create([
+        'first_name' => 'Other',
+        'last_name' => 'Buyer',
+        'email' => 'other@example.com',
+    ]);
+    $selectedOrder = Order::factory()->create(['created_by' => $selectedBuyer]);
+    $otherOrder = Order::factory()->create(['created_by' => $otherBuyer]);
+
+    $this->actingAs($admin);
+
+    Livewire::test('pages::orders.index')
+        ->assertSee('Filter by user')
+        ->assertSee('Selected Buyer')
+        ->assertSee('Other Buyer')
+        ->set('selectedBuyerId', (string) $selectedBuyer->id)
+        ->assertSee("#{$selectedOrder->id}")
+        ->assertDontSee("#{$otherOrder->id}");
 });

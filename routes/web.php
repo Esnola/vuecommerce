@@ -13,14 +13,15 @@ Route::prefix('products')->group(function () {
 
 Route::middleware('guest')->group(function () {
     Route::livewire('/login', 'pages::auth.login')->name('login');
+    Route::livewire('/register', 'pages::auth.register')->name('register');
 });
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', AuthenticatedSessionController::class)->name('logout');
     Route::livewire('/users/{user}/edit', 'pages::users.edit')->name('users.edit');
     Route::livewire('/purchases', 'pages::purchases.index')->name('purchases.index');
-    
+
     Route::middleware('can:view-orders')->group(function () {
-    Route::livewire('/orders', 'pages::orders.index')->name('orders.index');
-});
+        Route::livewire('/orders', 'pages::orders.index')->name('orders.index');
+    });
 });

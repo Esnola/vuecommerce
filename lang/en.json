@@ -257,11 +257,19 @@
     "Save changes": "Save changes",
     "Saving...": "Saving...",
     "Select a status": "Select a status",
+    "Filter by user": "Filter by user",
+    "All users": "All users",
     "Status": "Status",
     "Suspend": "Suspend",
     "Update the account information and security settings.": "Update the account information and security settings.",
     "User updated successfully.": "User updated successfully.",
     "You have not made any purchases yet.": "You have not made any purchases yet.",
     "Your completed orders will appear here.": "Your completed orders will appear here.",
-    "Your profile": "Your profile"
+    "Your profile": "Your profile",
+    "Already have an account?": "Already have an account?",
+    "Create account": "Create account",
+    "Creating account...": "Creating account...",
+    "Don't have an account?": "Don't have an account?",
+    "Enter your details to request access to Vuecommerce.": "Enter your details to request access to Vuecommerce.",
+    "Your account has been created and is awaiting approval.": "Your account has been created and is awaiting approval."
 }

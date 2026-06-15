@@ -91,6 +91,12 @@ new class extends Component
         <flux:text>{{ __('Access your account with your email and password.') }}</flux:text>
       </div>
 
+      @if (session('registration-status'))
+        <flux:callout color="green" icon="check-circle" class="mt-6">
+          <flux:callout.heading>{{ session('registration-status') }}</flux:callout.heading>
+        </flux:callout>
+      @endif
+
       <form wire:submit="login" class="mt-8 flex flex-col gap-6">
         <flux:field>
           <flux:label>{{ __('Email') }}</flux:label>
@@ -135,6 +141,13 @@ new class extends Component
           {{ __('Administrator access: test@example.com / password') }}
         </p>
       @endif
+
+      <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-300">
+        {{ __("Don't have an account?") }}
+        <a href="{{ route('register') }}" wire:navigate class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+          {{ __('Create account') }}
+        </a>
+      </p>
     </div>
   </div>
 </main>
