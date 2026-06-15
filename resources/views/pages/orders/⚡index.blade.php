@@ -1,15 +1,15 @@
 <?php
 
-use App\Models\Order;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Gate;
-use Livewire\Component;
-use Livewire\WithPagination;
+  use App\Enums\OrderStatusEnum;
+  use App\Models\Order;
+  use App\Models\User;
+  use Illuminate\Database\Eloquent\Collection;
+  use Illuminate\Pagination\LengthAwarePaginator;
+  use Illuminate\Support\Facades\Gate;
+  use Livewire\Component;
+  use Livewire\WithPagination;
 
-new class extends Component
-{
+  new class extends Component {
     use WithPagination;
 
     public string $selectedBuyerId = '';
@@ -20,66 +20,66 @@ new class extends Component
 
     public function mount(): void
     {
-        Gate::authorize('view-orders');
+      Gate::authorize('view-orders');
     }
 
     public function updatedSelectedBuyerId(): void
     {
-        $this->resetPage();
+      $this->resetPage();
     }
 
     public function updatedSortBy(): void
     {
-        $this->resetPage();
+      $this->resetPage();
     }
 
     public function updatedSortDirection(): void
     {
-        $this->resetPage();
+      $this->resetPage();
     }
 
     public function buyers(): Collection
     {
-        return User::query()
-            ->select(['id', 'first_name', 'last_name', 'email'])
-            ->whereHas('orders')
-            ->orderBy('first_name')
-            ->orderBy('last_name')
-            ->get();
+      return User::query()
+        ->select(['id', 'first_name', 'last_name', 'email'])
+        ->whereHas('orders')
+        ->orderBy('first_name')
+        ->orderBy('last_name')
+        ->get();
     }
 
     public function orders(): LengthAwarePaginator
     {
-        $ordersTable = (new Order)->getTable();
-        $sortColumn = match ($this->sortBy) {
-            'total_price' => 'total_price',
-            'buyer_orders_count' => 'buyer_orders_count',
-            'items_count' => 'items_count',
-            default => 'created_at',
-        };
-        $sortDirection = $this->sortDirection === 'asc' ? 'asc' : 'desc';
-        $buyerOrdersCount = Order::query()
-            ->from("{$ordersTable} as buyer_orders")
-            ->selectRaw('count(*)')
-            ->whereColumn('buyer_orders.created_by', "{$ordersTable}.created_by");
+      $ordersTable = (new Order)->getTable();
+      $sortColumn = match ($this->sortBy) {
+        'total_price' => 'total_price',
+        'buyer_orders_count' => 'buyer_orders_count',
+        'items_count' => 'items_count',
+        default => 'created_at',
+      };
+      $sortDirection = $this->sortDirection === 'asc' ? 'asc' : 'desc';
+      $buyerOrdersCount = Order::query()
+        ->from("{$ordersTable} as buyer_orders")
+        ->selectRaw('count(*)')
+        ->whereColumn('buyer_orders.created_by', "{$ordersTable}.created_by");
 
-        return Order::query()
-            ->select("{$ordersTable}.*")
-            ->addSelect(['buyer_orders_count' => $buyerOrdersCount])
-            ->with([
-                'buyer:id,first_name,last_name,email,phone',
-                'items.product:id,title,slug,sku',
-            ])
-            ->withCount('items')
-            ->when(
-                $this->selectedBuyerId !== '',
-                fn ($query) => $query->where('created_by', (int) $this->selectedBuyerId),
-            )
-            ->orderBy($sortColumn, $sortDirection)
-            ->orderByDesc('id')
-            ->paginate(10);
+      return Order::query()
+        ->select("{$ordersTable}.*")
+        ->addSelect(['buyer_orders_count' => $buyerOrdersCount])
+        ->with([
+          'buyer:id,first_name,last_name,email,phone',
+          'items.product:id,title,slug,sku',
+        ])
+        ->withCount('items')
+        ->when(
+          $this->selectedBuyerId !== '',
+          fn($query) => $query->where('created_by', (int)$this->selectedBuyerId),
+        )
+        ->orderBy($sortColumn, $sortDirection)
+        ->orderByDesc('id')
+        ->paginate(10);
     }
-};
+  };
 ?>
 
 @php
@@ -130,18 +130,19 @@ new class extends Component
       @forelse ($orders as $order)
         @php
           $badgeColor = match ($order->status) {
-            \App\Enums\OrderStatusEnum::PENDING => 'amber',
-            \App\Enums\OrderStatusEnum::SHIPPED => 'sky',
-            \App\Enums\OrderStatusEnum::DELIVERED => 'green',
+            OrderStatusEnum::PENDING => 'amber',
+            OrderStatusEnum::SHIPPED => 'sky',
+            OrderStatusEnum::DELIVERED => 'green',
           };
         @endphp
 
         <details
-          wire:key="order-{{ $order->id }}"
-          data-order="{{ $order->id }}"
-          class="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-white/5"
+                wire:key="order-{{ $order->id }}"
+                data-order="{{ $order->id }}"
+                class="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-white/5"
         >
-          <summary class="grid cursor-pointer list-none gap-5 p-5 [&::-webkit-details-marker]:hidden lg:grid-cols-[1fr_auto]">
+          <summary
+                  class="grid cursor-pointer list-none gap-5 p-5 [&::-webkit-details-marker]:hidden lg:grid-cols-[1fr_auto]">
             <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <div>
                 <p class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Order') }}</p>
@@ -163,7 +164,8 @@ new class extends Component
 
               <div>
                 <p class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Date') }}</p>
-                <time class="mt-1 block text-sm text-gray-700 dark:text-gray-300" datetime="{{ $order->created_at->toISOString() }}">
+                <time class="mt-1 block text-sm text-gray-700 dark:text-gray-300"
+                      datetime="{{ $order->created_at->toISOString() }}">
                   {{ $order->created_at->translatedFormat('j F Y, H:i') }}
                 </time>
               </div>
@@ -184,45 +186,46 @@ new class extends Component
               <flux:badge color="zinc">
                 {{ __('Buyer orders') }}: {{ $order->buyer_orders_count }}
               </flux:badge>
-              <flux:icon.chevron-down class="size-5 text-gray-500 transition-transform group-open:rotate-180 dark:text-gray-400" />
+              <flux:icon.chevron-down
+                      class="size-5 text-gray-500 transition-transform group-open:rotate-180 dark:text-gray-400"/>
             </div>
           </summary>
 
           <div class="overflow-x-auto border-t border-gray-200 dark:border-white/10">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-white/10">
               <thead class="bg-gray-50 dark:bg-white/5">
-                <tr>
-                  <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Product') }}</th>
-                  <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Quantity') }}</th>
-                  <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Unit price') }}</th>
-                  <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Discount') }}</th>
-                  <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Subtotal') }}</th>
-                </tr>
+              <tr>
+                <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Product') }}</th>
+                <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Quantity') }}</th>
+                <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Unit price') }}</th>
+                <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Discount') }}</th>
+                <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Subtotal') }}</th>
+              </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 dark:divide-white/10">
-                @foreach ($order->items as $item)
-                  <tr wire:key="order-item-{{ $item->id }}">
-                    <td class="px-5 py-4">
-                      <a
-                        href="{{ route('products.show', $item->product->slug) }}"
-                        class="font-medium text-gray-900 hover:text-sky-600 dark:text-white dark:hover:text-sky-400"
-                      >
-                        {{ $item->product->title }}
-                      </a>
-                      <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->product->sku }}</p>
-                    </td>
-                    <td class="px-5 py-4 text-right text-sm text-gray-700 dark:text-gray-300">{{ $item->quantity }}</td>
-                    <td class="px-5 py-4 text-right text-sm text-gray-700 dark:text-gray-300">
-                      {{ number_format((float) $item->unit_price, 2, ',', '.') }} €
-                    </td>
-                    <td class="px-5 py-4 text-right text-sm text-gray-700 dark:text-gray-300">
-                      {{ number_format((float) $item->discount_percentage, 2, ',', '.') }} %
-                    </td>
-                    <td class="px-5 py-4 text-right text-sm font-semibold text-gray-900 dark:text-white">
-                      {{ number_format((float) $item->total_price, 2, ',', '.') }} €
-                    </td>
-                  </tr>
-                @endforeach
+              @foreach ($order->items as $item)
+                <tr wire:key="order-item-{{ $item->id }}">
+                  <td class="px-5 py-4">
+                    <a
+                            href="{{ route('products.show', $item->product->slug) }}"
+                            class="font-medium text-gray-900 hover:text-sky-600 dark:text-white dark:hover:text-sky-400"
+                    >
+                      {{ $item->product->title }}
+                    </a>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->product->sku }}</p>
+                  </td>
+                  <td class="px-5 py-4 text-right text-sm text-gray-700 dark:text-gray-300">{{ $item->quantity }}</td>
+                  <td class="px-5 py-4 text-right text-sm text-gray-700 dark:text-gray-300">
+                    {{ number_format((float) $item->unit_price, 2, ',', '.') }} €
+                  </td>
+                  <td class="px-5 py-4 text-right text-sm text-gray-700 dark:text-gray-300">
+                    {{ number_format((float) $item->discount_percentage, 2, ',', '.') }} %
+                  </td>
+                  <td class="px-5 py-4 text-right text-sm font-semibold text-gray-900 dark:text-white">
+                    {{ number_format((float) $item->total_price, 2, ',', '.') }} €
+                  </td>
+                </tr>
+              @endforeach
               </tbody>
             </table>
           </div>

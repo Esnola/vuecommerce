@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserStatusEnum;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,13 +15,13 @@ use Illuminate\Support\Facades\Storage;
 
 #[Fillable(['first_name', 'last_name', 'email', 'phone', 'avatar', 'status', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     protected $attributes = [
-        'status' => UserStatusEnum::PENDING->value,
+        'status' => UserStatusEnum::ACTIVE->value,
     ];
 
     public function canAccessAccount(): bool

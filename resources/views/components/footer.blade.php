@@ -1,6 +1,6 @@
 <!-- Footer -->
 <footer>
-  <footer class="bg-gray-800 dark:shadow-[0px_10px_15px_10px_rgba(204,204,204,0.3)] mt-20">
+  <footer class="bg-gray-800 border-t border-t-white/5 mt-20">
     <div class="mx-auto px-6 lg:px-8 py-20 sm:py-18 max-w-7xl overflow-hidden">
       <nav aria-label="Footer" class="flex flex-col items-center gap-y-1">
         <x-partials.main-links/>

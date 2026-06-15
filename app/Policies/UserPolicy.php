@@ -6,6 +6,11 @@ use App\Models\User;
 
 class UserPolicy
 {
+    public function viewAny(User $user): bool
+    {
+        return $user->canAccessAccount() && $user->is_admin;
+    }
+
     public function view(User $user, User $model): bool
     {
         return $user->canAccessAccount() && ($user->is($model) || $user->is_admin);

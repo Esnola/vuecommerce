@@ -48,11 +48,12 @@ new class extends Component
           };
         @endphp
 
-        <article
+        <details
           wire:key="purchase-{{ $purchase->id }}"
-          class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-white/5"
+          data-purchase="{{ $purchase->id }}"
+          class="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-white/10 dark:bg-white/5"
         >
-          <div class="grid gap-5 border-b border-gray-200 p-5 dark:border-white/10 lg:grid-cols-[1fr_auto]">
+          <summary class="grid cursor-pointer list-none gap-5 p-5 [&::-webkit-details-marker]:hidden lg:grid-cols-[1fr_auto]">
             <div class="grid gap-4 sm:grid-cols-3">
               <div>
                 <p class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ __('Order') }}</p>
@@ -79,10 +80,11 @@ new class extends Component
               <flux:badge color="zinc">
                 {{ trans_choice(':count item|:count items', $purchase->items_count, ['count' => $purchase->items_count]) }}
               </flux:badge>
+              <flux:icon.chevron-down class="size-5 text-gray-500 transition-transform group-open:rotate-180 dark:text-gray-400" />
             </div>
-          </div>
+          </summary>
 
-          <div class="overflow-x-auto">
+          <div class="overflow-x-auto border-t border-gray-200 dark:border-white/10">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-white/10">
               <thead class="bg-gray-50 dark:bg-white/5">
                 <tr>
@@ -120,7 +122,7 @@ new class extends Component
               </tbody>
             </table>
           </div>
-        </article>
+        </details>
       @empty
         <flux:callout icon="shopping-bag">
           <flux:callout.heading>{{ __('You have not made any purchases yet.') }}</flux:callout.heading>

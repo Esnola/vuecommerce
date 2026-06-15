@@ -29,13 +29,27 @@
 ])
 
 @php
+  if (auth()->check()) {
+    $links[] = [
+      'name' => 'Dashboard',
+      'href' => route('dashboard'),
+      'active' => request()->routeIs('dashboard'),
+    ];
+  }
+/*
   if (auth()->user()?->is_admin) {
+    $links[] = [
+      'name' => 'Users',
+      'href' => route('users.index'),
+      'active' => request()->routeIs('users.*'),
+    ];
+
     $links[] = [
       'name' => 'Orders',
       'href' => route('orders.index'),
       'active' => request()->routeIs('orders.*'),
     ];
-  }
+  }*/
 @endphp
 
 <div class="flex flex-col sm:flex-row gap-6 ">

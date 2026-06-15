@@ -78,6 +78,9 @@ it('only displays purchases made by the authenticated user', function () {
         ->assertSee('OWN-001')
         ->assertSee('179,98')
         ->assertSee('Delivered')
+        ->assertSee('data-purchase="'.$ownedOrder->id.'"', false)
+        ->assertSee('<details', false)
+        ->assertSee('<summary', false)
         ->assertDontSee('Private Monitor')
         ->assertDontSee('OTHER-001')
         ->assertDontSee('999,99');

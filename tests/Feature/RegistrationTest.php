@@ -2,8 +2,11 @@
 
 use App\Enums\UserStatusEnum;
 use App\Models\User;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
@@ -17,7 +20,9 @@ it('shows the registration page to guests', function () {
         ->assertSee(route('register'));
 });
 
-it('creates a pending account and redirects to login', function () {
+it('creates an active account, sends verification, and redirects to login', function () {
+    Notification::fake();
+
     Livewire::test('pages::auth.register')
         ->set('firstName', 'Taylor')
         ->set('lastName', 'Otwell')
@@ -35,11 +40,26 @@ it('creates a pending account and redirects to login', function () {
     expect($user->first_name)->toBe('Taylor')
         ->and($user->last_name)->toBe('Otwell')
         ->and($user->phone)->toBe('+34600111222')
-        ->and($user->status)->toBe(UserStatusEnum::PENDING)
+        ->and($user->status)->toBe(UserStatusEnum::ACTIVE)
         ->and($user->email_verified_at)->toBeNull()
         ->and(Hash::check('secret-password', $user->password))->toBeTrue();
 
+    Notification::assertSentTo($user, VerifyEmail::class);
+
     $this->assertGuest();
+});
+
+it('uses active as the database default status', function () {
+    $userId = DB::table('users')->insertGetId([
+        'first_name' => 'Taylor',
+        'last_name' => 'Otwell',
+        'email' => 'default-status@example.com',
+        'password' => Hash::make('password'),
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    expect(User::query()->findOrFail($userId)->status)->toBe(UserStatusEnum::ACTIVE);
 });
 
 it('requires a unique email and matching password confirmation', function () {
@@ -74,5 +94,5 @@ it('redirects authenticated users away from registration', function () {
 
     $this->actingAs($user)
         ->get(route('register'))
-        ->assertRedirect(route('pages.index'));
+        ->assertRedirect(route('dashboard'));
 });

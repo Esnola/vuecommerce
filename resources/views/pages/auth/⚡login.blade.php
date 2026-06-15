@@ -20,6 +20,8 @@ new class extends Component
 
     public bool $isDev = false;
 
+    public bool $verificationEmailSent = false;
+
     public function mount(): void
     {
         $this->isDev = ! App::environment('production');
@@ -78,7 +80,36 @@ new class extends Component
 
         session()->regenerate();
 
-        $this->redirectIntended(route('pages.index'));
+        $this->redirectIntended(route('dashboard'));
+    }
+
+    public function resendVerificationEmail(): void
+    {
+        $this->validate([
+            'email' => ['required', 'string', 'email'],
+        ]);
+
+        $throttleKey = 'verification-email:'.Str::transliterate(
+            Str::lower($this->email).'|'.request()->ip()
+        );
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 6)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.throttle', ['seconds' => $seconds]),
+            ]);
+        }
+
+        $user = User::query()->where('email', $this->email)->first();
+
+        if ($user && ! $user->hasVerifiedEmail()) {
+            $user->sendEmailVerificationNotification();
+        }
+
+        RateLimiter::hit($throttleKey, 60);
+
+        $this->verificationEmailSent = true;
     }
 };
 ?>
@@ -97,6 +128,12 @@ new class extends Component
         </flux:callout>
       @endif
 
+      @if ($this->verificationEmailSent)
+        <flux:callout color="green" icon="check-circle" class="mt-6">
+          <flux:callout.heading>{{ __('If the account exists and is not verified, we have sent a new verification link.') }}</flux:callout.heading>
+        </flux:callout>
+      @endif
+
       <form wire:submit="login" class="mt-8 flex flex-col gap-6">
         <flux:field>
           <flux:label>{{ __('Email') }}</flux:label>
@@ -108,6 +145,16 @@ new class extends Component
             required
           />
           <flux:error name="email"/>
+          <button
+            type="button"
+            wire:click="resendVerificationEmail"
+            wire:loading.attr="disabled"
+            wire:target="resendVerificationEmail"
+            class="text-left text-sm font-medium text-indigo-600 hover:text-indigo-500 disabled:cursor-wait disabled:opacity-60 dark:text-indigo-400"
+          >
+            <span wire:loading.remove wire:target="resendVerificationEmail">{{ __('Resend verification email') }}</span>
+            <span wire:loading wire:target="resendVerificationEmail">{{ __('Sending verification email...') }}</span>
+          </button>
         </flux:field>
 
         <flux:field>

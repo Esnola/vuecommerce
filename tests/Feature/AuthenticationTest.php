@@ -2,7 +2,10 @@
 
 use App\Enums\UserStatusEnum;
 use App\Models\User;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\URL;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
@@ -29,7 +32,7 @@ it('authenticates a user and regenerates the session', function () {
         ->set('password', 'password')
         ->set('remember', true)
         ->call('login')
-        ->assertRedirect(route('pages.index'));
+        ->assertRedirect(route('dashboard'));
 
     $this->assertAuthenticatedAs($user);
     expect(session()->getId())->not->toBe($previousSessionId);
@@ -91,6 +94,7 @@ it('prioritizes the email verification message when a pending user is unverified
     User::factory()->unverified()->create([
         'email' => 'pending-unverified@example.com',
         'password' => 'password',
+        'status' => UserStatusEnum::PENDING,
     ]);
 
     Livewire::test('pages::auth.login')
@@ -102,6 +106,50 @@ it('prioritizes the email verification message when a pending user is unverified
         ]);
 
     $this->assertGuest();
+});
+
+it('resends the verification email from the login form', function () {
+    Notification::fake();
+
+    $user = User::factory()->unverified()->create([
+        'email' => 'unverified@example.com',
+    ]);
+
+    Livewire::test('pages::auth.login')
+        ->set('email', 'unverified@example.com')
+        ->call('resendVerificationEmail')
+        ->assertSet('verificationEmailSent', true)
+        ->assertHasNoErrors();
+
+    Notification::assertSentTo($user, VerifyEmail::class);
+});
+
+it('does not reveal whether an email exists when resending verification', function () {
+    Notification::fake();
+
+    Livewire::test('pages::auth.login')
+        ->set('email', 'missing@example.com')
+        ->call('resendVerificationEmail')
+        ->assertSet('verificationEmailSent', true)
+        ->assertHasNoErrors();
+
+    Notification::assertNothingSent();
+});
+
+it('verifies an email using the signed verification link', function () {
+    $user = User::factory()->unverified()->create();
+
+    $url = URL::temporarySignedRoute(
+        'verification.verify',
+        now()->addMinutes(60),
+        ['id' => $user->getKey(), 'hash' => sha1($user->getEmailForVerification())],
+    );
+
+    $this->get($url)
+        ->assertRedirect(route('login'))
+        ->assertSessionHas('registration-status');
+
+    expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
 });
 
 it('rejects a suspended user and explains that the account is suspended', function () {
@@ -127,7 +175,7 @@ it('redirects authenticated users away from login', function () {
 
     $this->actingAs($user)
         ->get(route('login'))
-        ->assertRedirect(route('pages.index'));
+        ->assertRedirect(route('dashboard'));
 });
 
 it('logs out the current user and invalidates the session', function () {

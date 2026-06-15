@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthenticatedSessionController;
+use App\Models\User;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::index')->name('pages.index');
@@ -16,8 +18,26 @@ Route::middleware('guest')->group(function () {
     Route::livewire('/register', 'pages::auth.register')->name('register');
 });
 
+Route::get('/email/verify/{id}/{hash}', function (string $id, string $hash) {
+    $user = User::query()->findOrFail($id);
+
+    abort_unless(hash_equals(sha1($user->getEmailForVerification()), $hash), 403);
+
+    if (! $user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+        event(new Verified($user));
+    }
+
+    return redirect()->route('login')->with(
+        'registration-status',
+        __('Your email address has been verified. You can now sign in.'),
+    );
+})->middleware('signed')->name('verification.verify');
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', AuthenticatedSessionController::class)->name('logout');
+    Route::livewire('/dashboard', 'pages::dashboard')->name('dashboard');
+    Route::livewire('/users', 'pages::users.index')->name('users.index');
     Route::livewire('/users/{user}/edit', 'pages::users.edit')->name('users.edit');
     Route::livewire('/purchases', 'pages::purchases.index')->name('purchases.index');
 

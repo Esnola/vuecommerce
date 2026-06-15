@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         image.addEventListener('mouseover', () => {
             mainImage.src = image.src;
         })
-    })
+    });
 
     if (mainImage && zoomContainer) {
         const zoomScale = 2;
