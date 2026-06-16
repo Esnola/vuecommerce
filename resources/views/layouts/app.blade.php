@@ -15,16 +15,17 @@
   @livewireStyles
 </head>
 <body
-  class="text-white font-sans dark:bg-gray-800 dark:text-gray-100"
-  data-authenticated="{{ auth()->check() ? 'true' : 'false' }}"
-  data-favorites-sync-url="{{ auth()->check() ? route('favorites.sync') : '' }}"
+        class="text-white font-sans dark:bg-gray-800 dark:text-gray-100"
+        data-authenticated="{{ auth()->check() ? 'true' : 'false' }}"
+        data-favorites-sync-url="{{ auth()->check() ? route('favorites.sync') : '' }}"
 >
 
 <x-header/>
 
 {{ $slot }}
-
+<x-cookies/>
 <x-footer/>
+
 @livewireScripts
 @fluxScripts
 
