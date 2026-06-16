@@ -27,7 +27,7 @@
           >
             <span
               data-favorite-count
-              class="absolute -left-1 -top-1 flex min-w-5 items-center justify-center rounded-full bg-rose-600 px-1.5 text-[10px] font-semibold leading-5 text-white"
+              class="absolute -left-1 -top-1 flex min-w-5 items-center justify-center rounded-full border border-white bg-transparent px-1.5 text-[10px] font-semibold leading-5 text-white"
             >
               {{ $favoriteCount }}
             </span>
