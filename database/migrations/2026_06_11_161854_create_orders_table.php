@@ -1,7 +1,7 @@
 <?php
-  
-  use App\Enums\OrderStatusEnum;
-  use Illuminate\Database\Migrations\Migration;
+
+use App\Enums\OrderStatusEnum;
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->decimal('total_price',20,2);
+            $table->decimal('total_price', 20, 2);
             $table->string('status')->default(OrderStatusEnum::PENDING->value);
             $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->cascadeOnDelete();

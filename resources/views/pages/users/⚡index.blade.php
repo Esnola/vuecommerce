@@ -151,6 +151,7 @@ new class extends Component
                   size="sm"
                   icon="pencil-square"
                   :aria-label="__('Edit :name', ['name' => $user->first_name])"
+                  class="cursor-pointer"
                 >
                   {{ __('Edit') }}
                 </flux:button>

@@ -32,25 +32,24 @@
 ?>
 
 <div class="bg-white dark:bg-gray-800">
-  <div class="mx-auto max-w-7xl overflow-hidden sm:px-6 lg:px-8">
+  <div class="mx-auto mt-4 max-w-7xl overflow-hidden sm:px-6 lg:px-8">
     <h2 class="sr-only">{{$title}}</h2>
 
-    <div class="-mx-px grid grid-cols-2 border-l border-gray-300 dark:border-gray-200/30 sm:mx-0 md:grid-cols-3 lg:grid-cols-4">
+    <div class="gap-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       @forelse($this->products() as $product)
         @php
           $thumbnail = $product->mainImage();
         @endphp
 
-        <div class="group relative border-r border-b border-gray-300 dark:border-gray-200/30 p-4 sm:p-6">
+        <div class="relative border border-gray-300 dark:border-gray-200/30 rounded-t-lg">
           <x-favorite-button
                   :product="$product"
                   :favorite="(bool) ($product->is_favorite ?? false)"
-                  class="absolute top-6 right-6 z-10 bg-white/90 shadow-sm dark:bg-gray-800/90"
           />
 
           @if($thumbnail)
             <img src="{{ $thumbnail }}" alt="{{ $product->title }}"
-                 class="aspect-square rounded-lg bg-gray-200 object-cover opacity-75 group-hover:opacity-100"/>
+                 class="aspect-square rounded-t-lg bg-gray-200 object-cover opacity-75 group-hover:opacity-100"/>
           @else
             <div class="aspect-square rounded-lg bg-gray-100"></div>
           @endif

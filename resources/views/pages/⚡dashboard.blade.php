@@ -52,7 +52,7 @@ new class extends Component
         </div>
 
         <div>
-          <flux:button :href="route('users.edit', auth()->user())" variant="primary" icon="pencil-square">
+          <flux:button :href="route('users.edit', auth()->user())" variant="primary" icon="pencil-square" class="cursor-pointer">
             {{ __('Edit profile') }}
           </flux:button>
         </div>
@@ -68,7 +68,7 @@ new class extends Component
         </div>
 
         <div>
-          <flux:button :href="route('purchases.index')" icon="receipt-percent">
+          <flux:button :href="route('purchases.index')" icon="receipt-percent" class="cursor-pointer">
             {{ __('View purchases') }}
           </flux:button>
         </div>
@@ -84,7 +84,7 @@ new class extends Component
         </div>
 
         <div>
-          <flux:button :href="route('favorites.index')" icon="heart">
+          <flux:button :href="route('favorites.index')" icon="heart" class="cursor-pointer">
             {{ __('Manage favorites') }}
           </flux:button>
         </div>
@@ -101,7 +101,7 @@ new class extends Component
           </div>
 
           <div>
-            <flux:button :href="route('users.index')" icon="user-group">
+            <flux:button :href="route('users.index')" icon="user-group" class="cursor-pointer">
               {{ __('Manage users') }}
             </flux:button>
           </div>
@@ -117,7 +117,7 @@ new class extends Component
           </div>
 
           <div>
-            <flux:button :href="route('orders.index')" icon="clipboard-document-list">
+            <flux:button :href="route('orders.index')" icon="clipboard-document-list" class="cursor-pointer">
               {{ __('Manage orders') }}
             </flux:button>
           </div>

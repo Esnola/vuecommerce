@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/show-images.js',
+                'resources/js/favorites.js',
             ],
             refresh: true,
             fonts: [

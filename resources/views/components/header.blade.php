@@ -1,12 +1,15 @@
+@php
+  $currentUser = auth()->user();
+  $favoriteCount = $currentUser?->favoriteProducts()->count() ?? 0;
+@endphp
+
 <nav class="relative bg-gray-800 dark:border-b dark:border-white/5">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
     <div class="flex h-16 items-center justify-between">
-      <div class="flex items-center justify-between w-full ">
-        <img src="{{asset('images/gitlogo.png')}}" alt="Your Company"
-             class="w-14 rounded-full h-auto shrink-0"/>
-        <div class="hidden sm:ml-6 sm:flex w-full justify-between items-center
-        ">
-          <div class="flex  justify-between items-center pl-8 w-full ">
+      <div class="flex w-full items-center justify-between">
+        <img src="{{ asset('images/gitlogo.png') }}" alt="Vuecommerce" class="h-auto w-14 shrink-0 rounded-full" />
+        <div class="hidden w-full justify-between sm:ml-6 sm:flex">
+          <div class="flex w-full items-center justify-between pl-8">
             <x-partials.main-links/>
             <div class="flex items-center gap-x-4">
               <livewire:language-toggle/>
@@ -17,27 +20,51 @@
       </div>
       <div class="hidden sm:ml-3 min-w-fit sm:flex items-center">
         @auth
-          <!-- Profile dropdown -->
+          <a
+            href="{{ route('favorites.index') }}"
+            class="relative inline-flex size-10 items-center justify-center rounded-full text-gray-300 transition hover:bg-white/10 hover:text-rose-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+            aria-label="{{ __('My favorites') }}"
+          >
+            <span
+              data-favorite-count
+              class="absolute -left-1 -top-1 flex min-w-5 items-center justify-center rounded-full bg-rose-600 px-1.5 text-[10px] font-semibold leading-5 text-white"
+            >
+              {{ $favoriteCount }}
+            </span>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              aria-hidden="true"
+              class="size-6"
+            >
+              <path
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
           <el-dropdown class="relative ml-3">
             <button class="relative flex rounded-full cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
               <span class="absolute -inset-1.5"></span>
               <span class="sr-only">Open user menu</span>
-              {!! profile_avatar(  auth()->user()->first_name . ' ' . auth()->user()->last_name,  auth()->user()->avatarUrl()) !!}
-
+              {!! profile_avatar($currentUser->first_name . ' ' . $currentUser->last_name, $currentUser->avatarUrl()) !!}
             </button>
             <el-menu anchor="bottom end" popover
                      class="w-48 origin-top-right rounded-md bg-white dark:bg-gray-800 py-1 shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
               <div class="px-4 py-2">
                 <p class="text-sm font-medium text-gray-800 dark:text-white">
-                  {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
+                  {{ $currentUser->first_name }} {{ $currentUser->last_name }}
                 </p>
-                <p class="truncate text-xs text-gray-500 dark:text-gray-400">{{ auth()->user()->email }}</p>
+                <p class="truncate text-xs text-gray-500 dark:text-gray-400">{{ $currentUser->email }}</p>
               </div>
               <a href="{{ route('dashboard') }}"
                  class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
                 {{ __('Dashboard') }}
               </a>
-              <a href="{{ route('users.edit', auth()->user()) }}"
+              <a href="{{ route('users.edit', $currentUser) }}"
                  class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
                 {{ __('Your profile') }}
               </a>
@@ -73,9 +100,8 @@
         @endauth
       </div>
       <div class="-mr-2 flex sm:hidden">
-        <!-- Mobile menu button -->
         <button type="button" command="--toggle" commandfor="mobile-menu"
-                class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
+                class="relative inline-flex cursor-pointer items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white/5 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500">
           <span class="absolute -inset-0.5"></span>
           <span class="sr-only">Open main menu</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
@@ -99,23 +125,21 @@
       @auth
         <div class="flex items-center px-5">
           <div class="shrink-0">
-            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                 alt="" class="size-10 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"/>
+            {!! profile_avatar($currentUser->first_name . ' ' . $currentUser->last_name, $currentUser->avatarUrl()) !!}
           </div>
           <div class="ml-3">
             <div class="text-base font-medium text-white">
-              {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
+              {{ $currentUser->first_name }} {{ $currentUser->last_name }}
             </div>
-            <div class="text-sm font-medium text-gray-400">{{ auth()->user()->email }}</div>
+            <div class="text-sm font-medium text-gray-400">{{ $currentUser->email }}</div>
           </div>
-
         </div>
         <div class="mt-3 space-y-1 px-2">
           <a href="{{ route('dashboard') }}"
              class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">
             {{ __('Dashboard') }}
           </a>
-          <a href="{{ route('users.edit', auth()->user()) }}"
+          <a href="{{ route('users.edit', $currentUser) }}"
              class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">
             {{ __('Your profile') }}
           </a>
@@ -130,7 +154,7 @@
           <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit"
-                    class="block w-full rounded-md px-3 py-2 text-left text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">
+                    class="block w-full cursor-pointer rounded-md px-3 py-2 text-left text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">
               {{ __('Sign out') }}
             </button>
           </form>

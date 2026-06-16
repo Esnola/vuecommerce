@@ -102,5 +102,5 @@
       <x-comments :product="$product"/>
     </div>
   </section>
-  @vite('resources/js/show-images.js')
 </div>
+  @vite('resources/js/show-images.js')

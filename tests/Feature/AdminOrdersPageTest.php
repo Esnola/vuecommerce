@@ -69,13 +69,13 @@ it('allows admins to view all order details', function () {
         ->assertSee('<summary', false);
 });
 
-it('only shows the orders navigation link to admins', function () {
+it('does not show the orders navigation link in the header', function () {
     $admin = User::factory()->create(['is_admin' => true]);
     $user = User::factory()->create(['is_admin' => false]);
 
     $this->actingAs($admin)
         ->get(route('pages.index'))
-        ->assertSee(route('orders.index'));
+        ->assertDontSee(route('orders.index'));
 
     $this->actingAs($user)
         ->get(route('pages.index'))

@@ -145,7 +145,7 @@
         <flux:button
                 type="submit"
                 variant="primary"
-                class="w-full"
+                class="w-full cursor-pointer"
                 wire:loading.attr="disabled"
                 wire:target="register"
         >

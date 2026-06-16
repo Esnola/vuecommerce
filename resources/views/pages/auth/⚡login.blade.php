@@ -150,7 +150,7 @@ new class extends Component
             wire:click="resendVerificationEmail"
             wire:loading.attr="disabled"
             wire:target="resendVerificationEmail"
-            class="text-left text-sm font-medium text-indigo-600 hover:text-indigo-500 disabled:cursor-wait disabled:opacity-60 dark:text-indigo-400"
+            class="cursor-pointer text-left text-sm font-medium text-indigo-600 hover:text-indigo-500 disabled:cursor-wait disabled:opacity-60 dark:text-indigo-400"
           >
             <span wire:loading.remove wire:target="resendVerificationEmail">{{ __('Resend verification email') }}</span>
             <span wire:loading wire:target="resendVerificationEmail">{{ __('Sending verification email...') }}</span>
@@ -174,7 +174,7 @@ new class extends Component
         <flux:button
           type="submit"
           variant="primary"
-          class="w-full"
+          class="w-full cursor-pointer"
           wire:loading.attr="disabled"
           wire:target="login"
         >

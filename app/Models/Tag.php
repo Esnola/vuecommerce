@@ -9,18 +9,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tag extends Model
 {
-  use SoftDeletes;
+    use SoftDeletes;
 
-  protected $guarded = [];
+    protected $guarded = [];
 
-  public function category(): BelongsTo
-  {
-    return $this->belongsTo(Category::class);
-  }
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
 
-  public function products(): BelongsToMany
-  {
-    return $this->belongsToMany(Product::class, 'product_tags')
-      ->withTimestamps();
-  }
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'product_tags')
+            ->withTimestamps();
+    }
 }

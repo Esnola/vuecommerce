@@ -64,6 +64,7 @@ it('removes a favorite from the page', function () {
     Livewire::test('pages::favorites.index')
         ->assertSee('Removable Keyboard')
         ->call('removeFavorite', $favorite->id)
+        ->assertDispatched('favorite-removed')
         ->assertDontSee('Removable Keyboard')
         ->assertSee('You have no favorite products yet.');
 

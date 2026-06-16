@@ -48,7 +48,7 @@
               <button class="relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium text-gray-900 uppercase hover:bg-gray-50 focus:ring-3 focus:ring-indigo-500/50 focus:ring-offset-4 focus:outline-hidden">
                 <span class="sr-only">Angled view</span>
                 <span class="absolute inset-0 overflow-hidden rounded-md">
-                <img src="{{ $image->url }}" alt="{{ $product->title . '-' . $image->position }}"
+                <img data-thumbs src="{{ $image->url }}" alt="{{ $product->title . '-' . $image->position }}"
                      class="size-full object-cover"/>
               </span>
                 <span aria-hidden="true"
@@ -59,8 +59,8 @@
         </div>
 
         <el-tab-panels>
-          <div>
-            <img src="{{ $product->mainImage() }}"
+          <div id="mainImageZoom">
+            <img id="mainImage" src="{{ $product->mainImage() }}"
                  alt="{{ $product->title . '- 1'  }}"
                  class="aspect-square w-full object-cover sm:rounded-lg"/>
           </div>
@@ -151,7 +151,7 @@
 
           <div class="mt-10 flex">
             <button type="submit"
-                    class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden sm:w-full">
+                    class="flex max-w-xs flex-1 cursor-pointer items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden sm:w-full">
               {{ __('Add to bag') }}
             </button>
 
@@ -170,7 +170,7 @@
             <div>
               <h3>
                 <button type="button" command="--toggle" commandfor="detail-0"
-                        class="group relative flex w-full items-center justify-between py-6 text-left">
+                        class="group relative flex w-full cursor-pointer items-center justify-between py-6 text-left">
                   <span class="text-sm font-medium not-in-aria-expanded:text-gray-900 in-aria-expanded:text-indigo-600">{{ __('Features')}}</span>
                   <span class="ml-6 flex items-center">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
@@ -203,7 +203,7 @@
             <div>
               <h3>
                 <button type="button" command="--toggle" commandfor="detail-1"
-                        class="group relative flex w-full items-center justify-between py-6 text-left">
+                        class="group relative flex w-full cursor-pointer items-center justify-between py-6 text-left">
                   <span class="text-sm font-medium not-in-aria-expanded:text-gray-900 in-aria-expanded:text-indigo-600">
                     {{ __('Care instructions')}}
                   </span>
@@ -235,7 +235,7 @@
             <div>
               <h3>
                 <button type="button" command="--toggle" commandfor="detail-2"
-                        class="group relative flex w-full items-center justify-between py-6 text-left">
+                        class="group relative flex w-full cursor-pointer items-center justify-between py-6 text-left">
                   <span class="text-sm font-medium not-in-aria-expanded:text-gray-900 in-aria-expanded:text-indigo-600">
                     {{ __('Shipping & Details') }}
                   </span>
@@ -267,7 +267,7 @@
             <div>
               <h3>
                 <button type="button" command="--toggle" commandfor="detail-3"
-                        class="group relative flex w-full items-center justify-between py-6 text-left">
+                        class="group relative flex w-full cursor-pointer items-center justify-between py-6 text-left">
                   <span class="text-sm font-medium not-in-aria-expanded:text-gray-900 in-aria-expanded:text-indigo-600">Returns</span>
                   <span class="ml-6 flex items-center">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
@@ -300,3 +300,4 @@
     </div>
   </div>
 </div>
+@vite('resources/js/show-images.js')

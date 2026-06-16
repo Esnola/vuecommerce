@@ -29,6 +29,8 @@ new class extends Component
         auth()->user()
             ->favoriteProducts()
             ->detach($productId);
+
+        $this->dispatch('favorite-removed');
     }
 };
 ?>
@@ -52,7 +54,7 @@ new class extends Component
           @endphp
 
           <flux:card wire:key="favorite-{{ $product->id }}" class="flex flex-col gap-5">
-            <a href="{{ route('products.show', $product->slug) }}" wire:navigate class="group">
+            <a href="{{ route('products.show', $product->slug) }}" wire:navigate class="group cursor-pointer">
               @if ($thumbnail)
                 <img
                   src="{{ $thumbnail }}"
@@ -71,7 +73,7 @@ new class extends Component
                 <a
                   href="{{ route('products.show', $product->slug) }}"
                   wire:navigate
-                  class="font-semibold text-gray-900 hover:text-sky-600 dark:text-white dark:hover:text-sky-400"
+                  class="cursor-pointer font-semibold text-gray-900 hover:text-sky-600 dark:text-white dark:hover:text-sky-400"
                 >
                   {{ $product->title }}
                 </a>
@@ -79,7 +81,7 @@ new class extends Component
               </div>
 
               <div class="mt-auto flex items-center justify-between gap-3">
-                <flux:button :href="route('products.show', $product->slug)" wire:navigate icon="eye">
+                <flux:button :href="route('products.show', $product->slug)" wire:navigate icon="eye" class="cursor-pointer">
                   {{ __('View product') }}
                 </flux:button>
 
@@ -90,6 +92,7 @@ new class extends Component
                   wire:click="removeFavorite({{ $product->id }})"
                   wire:loading.attr="disabled"
                   wire:target="removeFavorite({{ $product->id }})"
+                  class="cursor-pointer"
                 >
                   {{ __('Remove') }}
                 </flux:button>
@@ -107,7 +110,7 @@ new class extends Component
         <flux:callout.heading>{{ __('You have no favorite products yet.') }}</flux:callout.heading>
         <flux:callout.text>{{ __('Save products from the catalog and they will appear here.') }}</flux:callout.text>
         <x-slot:actions>
-          <flux:button :href="route('products.index')" wire:navigate>
+          <flux:button :href="route('products.index')" wire:navigate class="cursor-pointer">
             {{ __('Browse products') }}
           </flux:button>
         </x-slot:actions>
@@ -115,3 +118,7 @@ new class extends Component
     @endif
   </div>
 </main>
+
+@once
+  @vite('resources/js/favorites.js')
+@endonce

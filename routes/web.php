@@ -12,8 +12,8 @@ Route::livewire('/preview', 'pages::product-view')->name('page.preview');
 
 Route::prefix('products')->group(function () {
     Route::livewire('/', 'pages::products.index')->name('products.index');
-    Route::livewire('/{slug}/view', 'pages::products.product-show')->name('products.show-previ');
-    Route::livewire('/{slug}', 'pages::products.show')->name('products.show');
+    Route::livewire('/{slug}', 'pages::products.product-show')->name('products.show');
+  //  Route::livewire('/{slug}', 'pages::products.show')->name('products.show');
 });
 
 Route::middleware('guest')->group(function () {
