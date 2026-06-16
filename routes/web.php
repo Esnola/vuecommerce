@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticatedSessionController;
+use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\FavoriteController;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
@@ -12,8 +13,8 @@ Route::livewire('/preview', 'pages::product-view')->name('page.preview');
 
 Route::prefix('products')->group(function () {
     Route::livewire('/', 'pages::products.index')->name('products.index');
-    Route::livewire('/{slug}', 'pages::products.product-show')->name('products.show');
-  //  Route::livewire('/{slug}', 'pages::products.show')->name('products.show');
+    Route::livewire('/{slug}', 'pages::products.show')->name('products.show');
+    // Route::livewire('/{slug}', 'pages::products.product-show')->name('products.show');
 });
 
 Route::middleware('guest')->group(function () {
@@ -41,7 +42,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', AuthenticatedSessionController::class)->name('logout');
     Route::post('/favorites/sync', [FavoriteController::class, 'sync'])->name('favorites.sync');
     Route::post('/favorites/{product}/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::post('/cart/{product}', [CartItemController::class, 'store'])->name('cart.store');
+    Route::patch('/cart/{product}', [CartItemController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{product}', [CartItemController::class, 'destroy'])->name('cart.destroy');
     Route::livewire('/dashboard', 'pages::dashboard')->name('dashboard');
+    Route::livewire('/cart', 'pages::cart.index')->name('cart.index');
     Route::livewire('/favorites', 'pages::favorites.index')->name('favorites.index');
     Route::livewire('/users', 'pages::users.index')->name('users.index');
     Route::livewire('/users/{user}/edit', 'pages::users.edit')->name('users.edit');

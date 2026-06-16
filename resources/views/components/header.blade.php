@@ -1,100 +1,191 @@
 @php
   $currentUser = auth()->user();
+  $cartCount = $currentUser?->cartItems()->sum('quantity') ?? 0;
   $favoriteCount = $currentUser?->favoriteProducts()->count() ?? 0;
 @endphp
 
 <nav class="relative bg-gray-800 dark:border-b dark:border-white/5">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
-    <div class="flex h-16 items-center justify-between">
-      <div class="flex w-full items-center justify-between">
-        <img src="{{ asset('images/gitlogo.png') }}" alt="Vuecommerce" class="h-auto w-14 shrink-0 rounded-full" />
+    <div class="grid h-16 grid-cols-[auto_1fr_auto] items-center sm:flex sm:justify-between">
+      <div class="contents sm:flex sm:w-full sm:items-center sm:justify-between">
+        <img src="{{ asset('images/gitlogo.png') }}" alt="Vuecommerce" class="h-auto w-14 shrink-0 rounded-full"/>
         <div class="hidden w-full justify-between sm:ml-6 sm:flex">
           <div class="flex w-full items-center justify-between pl-8">
             <x-partials.main-links/>
+            {{-- Cart & Favourites --}}
+            <div class="hidden sm:ml-3 min-w-fit sm:flex items-center">
+              @auth
+                <a href="{{ route('cart.index') }}"
+                   data-cart-link
+                   class="relative size-10 items-center justify-center rounded-full text-gray-300 transition hover:bg-white/10 hover:text-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 {{ $cartCount > 0 ? 'inline-flex' : 'hidden' }}"
+                   aria-label="{{ __('Shopping cart') }}"
+                >
+            <span
+                    data-cart-count
+                    class="absolute -left-1 -top-1 flex min-w-5 items-center justify-center rounded-full border border-black bg-white/60 px-1.5 text-[10px] font-semibold leading-5 text-black"
+            >
+              {{ $cartCount }}
+            </span>
+                  <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          aria-hidden="true"
+                          class="size-6"
+                  >
+                    <path
+                            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 14.25A2.25 2.25 0 0 0 8.955 16.5h7.59a2.25 2.25 0 0 0 2.205-1.806l1.16-5.802A1.125 1.125 0 0 0 18.806 7.5H5.106Zm3.894 16.5h.008v.008H9v-.008Zm8.25 0h.008v.008h-.008v-.008Z"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                    />
+                  </svg>
+                </a>
+                <a
+                        href="{{ route('favorites.index') }}"
+                        data-favorite-link
+                        class="relative size-10 items-center justify-center rounded-full text-gray-300 transition hover:bg-white/10 hover:text-rose-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 {{ $favoriteCount > 0 ? 'inline-flex' : 'hidden' }}"
+                        aria-label="{{ __('My favorites') }}"
+                >
+            <span
+                    data-favorite-count
+                    class="absolute -left-1 -top-1 flex min-w-5 items-center justify-center rounded-full border border-black bg-white/60 px-1.5 text-[10px] font-semibold leading-5 text-black"
+            >
+              {{ $favoriteCount }}
+            </span>
+                  <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          aria-hidden="true"
+                          class="size-6"
+                  >
+                    <path
+                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                    />
+                  </svg>
+                </a>
+                <el-dropdown class="relative ml-3">
+                  <button class="relative flex rounded-full cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                    <span class="absolute -inset-1.5"></span>
+                    <span class="sr-only">Open user menu</span>
+                    {!! profile_avatar($currentUser->first_name . ' ' . $currentUser->last_name, $currentUser->avatarUrl()) !!}
+                  </button>
+                  <el-menu anchor="bottom end" popover
+                           class="w-48 origin-top-right rounded-md bg-white dark:bg-gray-800 py-1 shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
+                    <div class="px-4 py-2">
+                      <p class="text-sm font-medium text-gray-800 dark:text-white">
+                        {{ $currentUser->first_name }} {{ $currentUser->last_name }}
+                      </p>
+                      <p class="truncate text-xs text-gray-500 dark:text-gray-400">{{ $currentUser->email }}</p>
+                    </div>
+                    <a href="{{ route('dashboard') }}"
+                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
+                      {{ __('Dashboard') }}
+                    </a>
+                    <a href="{{ route('users.edit', $currentUser) }}"
+                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
+                      {{ __('Your profile') }}
+                    </a>
+                    <a href="{{ route('purchases.index') }}"
+                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
+                      {{ __('My purchases') }}
+                    </a>
+                    <a href="{{ route('cart.index') }}"
+                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
+                      {{ __('Shopping cart') }}
+                    </a>
+                    <a href="{{ route('favorites.index') }}"
+                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
+                      {{ __('My favorites') }}
+                    </a>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                      @csrf
+                      <button type="submit"
+                              class="cursor-pointer w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
+                        {{ __('Sign out') }}
+                      </button>
+                    </form>
+                  </el-menu>
+                </el-dropdown>
+              @else
+                <div class="flex items-center gap-x-4">
+                  <a href="{{ route('register') }}"
+                     class="min-w-fit rounded-md px-3 py-2 text-[10px] font-medium text-gray-300 hover:bg-white/20 hover:text-white">
+                    {{ __('Register') }}
+                  </a>
+                  <a href="{{ route('login') }}"
+                     class="min-w-fit rounded-md px-3 py-2 text-[10px] font-medium text-white hover:bg-white/20 hover:text-white">
+                    {{ __('Log In') }}
+                  </a>
+                </div>
+              @endauth
+            </div>
+            {{-- Lang & Theme--}}
             <div class="flex items-center gap-x-4">
               <livewire:language-toggle/>
               <x-partials.darkmode-switch/>
             </div>
           </div>
         </div>
-      </div>
-      <div class="hidden sm:ml-3 min-w-fit sm:flex items-center">
         @auth
-          <a
-            href="{{ route('favorites.index') }}"
-            class="relative inline-flex size-10 items-center justify-center rounded-full text-gray-300 transition hover:bg-white/10 hover:text-rose-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-            aria-label="{{ __('My favorites') }}"
-          >
-            <span
-              data-favorite-count
-              class="absolute -left-1 -top-1 flex min-w-5 items-center justify-center rounded-full bg-rose-600 px-1.5 text-[10px] font-semibold leading-5 text-white"
+          <div class="col-start-2 flex items-center justify-center gap-x-4 sm:hidden">
+            <a href="{{ route('cart.index') }}"
+               data-cart-link
+               class="relative size-10 items-center justify-center rounded-full text-gray-300 transition hover:bg-white/10 hover:text-sky-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 {{ $cartCount > 0 ? 'inline-flex' : 'hidden' }}"
+               aria-label="{{ __('Shopping cart') }}"
             >
-              {{ $favoriteCount }}
-            </span>
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              aria-hidden="true"
-              class="size-6"
-            >
-              <path
-                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </a>
-          <el-dropdown class="relative ml-3">
-            <button class="relative flex rounded-full cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-              <span class="absolute -inset-1.5"></span>
-              <span class="sr-only">Open user menu</span>
-              {!! profile_avatar($currentUser->first_name . ' ' . $currentUser->last_name, $currentUser->avatarUrl()) !!}
-            </button>
-            <el-menu anchor="bottom end" popover
-                     class="w-48 origin-top-right rounded-md bg-white dark:bg-gray-800 py-1 shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in">
-              <div class="px-4 py-2">
-                <p class="text-sm font-medium text-gray-800 dark:text-white">
-                  {{ $currentUser->first_name }} {{ $currentUser->last_name }}
-                </p>
-                <p class="truncate text-xs text-gray-500 dark:text-gray-400">{{ $currentUser->email }}</p>
-              </div>
-              <a href="{{ route('dashboard') }}"
-                 class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
-                {{ __('Dashboard') }}
-              </a>
-              <a href="{{ route('users.edit', $currentUser) }}"
-                 class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
-                {{ __('Your profile') }}
-              </a>
-              <a href="{{ route('purchases.index') }}"
-                 class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
-                {{ __('My purchases') }}
-              </a>
-              <a href="{{ route('favorites.index') }}"
-                 class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
-                {{ __('My favorites') }}
-              </a>
-
-              <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit"
-                        class="cursor-pointer w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 focus:bg-gray-600 focus:outline-hidden">
-                  {{ __('Sign out') }}
-                </button>
-              </form>
-            </el-menu>
-          </el-dropdown>
-        @else
-          <div class="flex items-center gap-x-4">
-            <a href="{{ route('register') }}"
-               class="min-w-fit rounded-md px-3 py-2 text-[10px] font-medium text-gray-300 hover:bg-white/20 hover:text-white">
-              {{ __('Register') }}
+              <span
+                      data-cart-count
+                      class="absolute -left-1 -top-1 flex min-w-5 items-center justify-center rounded-full border border-black bg-white/60 px-1.5 text-[10px] font-semibold leading-5 text-black"
+              >
+                {{ $cartCount }}
+              </span>
+              <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      aria-hidden="true"
+                      class="size-6"
+              >
+                <path
+                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 14.25A2.25 2.25 0 0 0 8.955 16.5h7.59a2.25 2.25 0 0 0 2.205-1.806l1.16-5.802A1.125 1.125 0 0 0 18.806 7.5H5.106Zm3.894 16.5h.008v.008H9v-.008Zm8.25 0h.008v.008h-.008v-.008Z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                />
+              </svg>
             </a>
-            <a href="{{ route('login') }}"
-               class="min-w-fit rounded-md px-3 py-2 text-[10px] font-medium text-white hover:bg-white/20 hover:text-white">
-              {{ __('Log In') }}
+
+            <a href="{{ route('favorites.index') }}"
+               data-favorite-link
+               class="relative size-10 items-center justify-center rounded-full text-gray-300 transition hover:bg-white/10 hover:text-rose-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 {{ $favoriteCount > 0 ? 'inline-flex' : 'hidden' }}"
+               aria-label="{{ __('My favorites') }}"
+            >
+              <span
+                      data-favorite-count
+                      class="absolute -left-1 -top-1 flex min-w-5 items-center justify-center rounded-full border border-black bg-white/60 px-1.5 text-[10px] font-semibold leading-5 text-black"
+              >
+                {{ $favoriteCount }}
+              </span>
+              <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      aria-hidden="true"
+                      class="size-6"
+              >
+                <path
+                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                />
+              </svg>
             </a>
           </div>
         @endauth
@@ -146,6 +237,10 @@
           <a href="{{ route('purchases.index') }}"
              class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">
             {{ __('My purchases') }}
+          </a>
+          <a href="{{ route('cart.index') }}"
+             class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">
+            {{ __('Shopping cart') }}
           </a>
           <a href="{{ route('favorites.index') }}"
              class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">

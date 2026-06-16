@@ -1,4 +1,3 @@
-
 const FAVORITES_STORAGE_KEY = 'vuecommerce.favorites';
 const FAVORITE_FEEDBACK_DURATION = 3000;
 const favoriteFeedbackTimers = new WeakMap();
@@ -7,7 +6,7 @@ const favoriteIdsFromStorage = () => {
     try {
         const favoriteIds = JSON.parse(localStorage.getItem(FAVORITES_STORAGE_KEY) ?? '[]');
 
-        if (! Array.isArray(favoriteIds)) {
+        if (!Array.isArray(favoriteIds)) {
             return [];
         }
 
@@ -25,24 +24,42 @@ const storeFavoriteIds = (favoriteIds) => {
     localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteIds));
 };
 
-const updateFavoriteCount = (favoriteCount) => {
-    document.querySelectorAll('[data-favorite-count]').forEach((counter) => {
-        counter.textContent = String(Math.max(0, favoriteCount));
+const updateFavoriteLinksVisibility = (favoriteCount) => {
+    document.querySelectorAll('[data-favorite-link]').forEach((link) => {
+        const shouldShow = favoriteCount > 0;
+
+        link.classList.toggle('hidden', !shouldShow);
+        link.classList.toggle('inline-flex', shouldShow);
     });
 };
 
+const updateFavoriteCount = (favoriteCount) => {
+    const count = Math.max(0, favoriteCount);
+
+    document.querySelectorAll('[data-favorite-count]').forEach((counter) => {
+        counter.textContent = String(count);
+    });
+
+    updateFavoriteLinksVisibility(count);
+};
+
 const adjustFavoriteCount = (delta) => {
+    let updatedCount = 0;
+
     document.querySelectorAll('[data-favorite-count]').forEach((counter) => {
         const currentCount = Number(counter.textContent.trim());
 
-        counter.textContent = String(Math.max(0, (Number.isInteger(currentCount) ? currentCount : 0) + delta));
+        updatedCount = Math.max(0, (Number.isInteger(currentCount) ? currentCount : 0) + delta);
+        counter.textContent = String(updatedCount);
     });
+
+    updateFavoriteLinksVisibility(updatedCount);
 };
 
 const showFavoriteFeedback = (button, isFavorite) => {
     const feedback = button.querySelector('[data-favorite-feedback]');
 
-    if (! feedback) {
+    if (!feedback) {
         return;
     }
 
@@ -72,7 +89,7 @@ const setFavoriteButtonState = (button, isFavorite) => {
     button.dataset.isFavorite = isFavorite ? 'true' : 'false';
     button.setAttribute('aria-pressed', isFavorite ? 'true' : 'false');
     button.classList.toggle('text-rose-600', isFavorite);
-    button.classList.toggle('text-gray-400', ! isFavorite);
+    button.classList.toggle('text-gray-400', !isFavorite);
 
     if (icon) {
         icon.setAttribute('fill', isFavorite ? 'currentColor' : 'none');
@@ -93,11 +110,21 @@ const updateFavoriteButtons = (favoriteIds) => {
     });
 };
 
+const favoriteButtonFromClick = (target) => {
+    const button = target.closest('[data-favorite-button]');
+
+    if (button) {
+        return button;
+    }
+
+    return target.closest('[data-favorite-div]')?.querySelector('[data-favorite-button]') ?? null;
+};
+
 const synchronizeGuestFavorites = async () => {
     const syncUrl = document.body.dataset.favoritesSyncUrl;
     const favoriteIds = favoriteIdsFromStorage();
 
-    if (document.body.dataset.authenticated !== 'true' || ! syncUrl || favoriteIds.length === 0) {
+    if (document.body.dataset.authenticated !== 'true' || !syncUrl || favoriteIds.length === 0) {
         return;
     }
 
@@ -109,10 +136,10 @@ const synchronizeGuestFavorites = async () => {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             },
-            body: JSON.stringify({ product_ids: favoriteIds }),
+            body: JSON.stringify({product_ids: favoriteIds}),
         });
 
-        if (! response.ok) {
+        if (!response.ok) {
             return;
         }
 
@@ -122,7 +149,7 @@ const synchronizeGuestFavorites = async () => {
         updateFavoriteButtons(data.favorite_ids ?? []);
         updateFavoriteCount((data.favorite_ids ?? []).length);
     } catch {
-        return;
+
     }
 };
 
@@ -139,11 +166,13 @@ const initializeFavoriteButtons = () => {
 };
 
 document.addEventListener('click', async (event) => {
-    const button = event.target.closest('[data-favorite-button]');
+    const button = favoriteButtonFromClick(event.target);
 
-    if (! button || button.disabled) {
+    if (!button || button.disabled) {
         return;
     }
+
+    event.preventDefault();
 
     const productId = Number(button.dataset.productId);
 
@@ -153,7 +182,7 @@ document.addEventListener('click', async (event) => {
         const updatedFavoriteIds = isFavorite
             ? favoriteIds.filter((favoriteId) => favoriteId !== productId)
             : [...favoriteIds, productId];
-        const willBeFavorite = ! isFavorite;
+        const willBeFavorite = !isFavorite;
 
         storeFavoriteIds(updatedFavoriteIds);
         updateFavoriteButtons(updatedFavoriteIds);
@@ -186,7 +215,7 @@ document.addEventListener('click', async (event) => {
             showFavoriteFeedback(button, data.is_favorite);
         }
     } catch {
-        return;
+
     } finally {
         button.disabled = false;
     }
